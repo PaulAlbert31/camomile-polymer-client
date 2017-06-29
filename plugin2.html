@@ -76,7 +76,7 @@
       this.start=[event.center.x,event.center.y];
       this.target.push(event.center.x);
       this.target.push(event.center.y);
-      // this.line=this.draw.polyline(this.target,this.target).fill('none').stroke({color:'#F4F1F1',linecap:'round',linejoin:'round',width:4,opacity:0.7});
+      this.line=this.draw.polyline(this.target,this.target).fill('none').stroke({color:'#F4F1F1',linecap:'round',linejoin:'round',width:4,opacity:0.7});
       // this.line2=this.draw.polyline(this.target,this.target).fill('none').stroke({color:'#5CD9F0',linecap:'round',linejoin:'round',width:8,opacity:0.5});
       this.line.fill({opacity:0.8}).animate(10).fill({opacity:0});
 
@@ -106,8 +106,8 @@
       circle.center(maxi[0],maxi[1]);
       circle.animate(1000).stroke({width:0});
       // this.line2.animate(500).plot(this.target).animate(1000).stroke({width:0});
-      // this.line.animate(500).plot(this.target).animate(1000).stroke({width:0}).stroke({width:4}).plot(toSave).animate().stroke({width:0});
-      // this.line.plot(this.target).animate(500).stroke({width:0});
+      this.line.animate(500).plot(this.target).animate(1000).stroke({width:0}).stroke({width:4}).plot(toSave).animate().stroke({width:0});
+      this.line.plot(this.target).animate(500).stroke({width:0});
       console.log({'type': event.type,
                    'x': event.center.x/this.width,
                    'y': event.center.y/this.height,
@@ -140,7 +140,7 @@
       this.line.plot(this.target);
     }
     var player = videojs('player');
-    player.touch({'singletap':dra,'doubletap':paus,'panstart':st2,'panend':en2, 'pinchin':pi,'pan':pa2},data={'round':10000,'doround':false},drawing=true);
+    player.touch({'singletap':dra,'doubletap':paus,'panstart':st,'panend':en, 'pinchin':pi,'pan':pa},data={'round':10000,'doround':false},drawing=true);
 
   </script>
 
