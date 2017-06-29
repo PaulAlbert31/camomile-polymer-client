@@ -74,7 +74,6 @@
       _populateMedia(corpus) {
         return this.client.getMedia({filter: {'id_corpus': corpus}})
           .then(data => {
-            console.log("media",data);
             this.media = data;
           })
           .catch(err => {

@@ -9,21 +9,21 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rom1504/camomile-polymer-client.git"
+    "url": "git+https://github.com/paulalbert31/camomile-polymer-client.git"
   },
   "author": "Romain Beaumont <romain.rom1@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rom1504/camomile-polymer-client/issues"
+    "url": "https://github.com/paulalbert31/camomile-polymer-client/issues"
   },
-  "homepage": "https://github.com/rom1504/camomile-polymer-client#readme",
+  "homepage": "https://github.com/paulalbert31/camomile-polymer-client#readme",
   "dependencies": {
-    "video.js": "^6.2.0",
-    "hammerjs": "^2.0.6",
-    "svgjs": "^2.6.2",
     "camomile-client": "rom1504/camomile-client-javascript#patch-1",
     "d3": "^4.9.1",
+    "hammerjs": "^2.0.6",
+    "svgjs": "^2.6.2",
+    "video.js": "^6.2.0",
     "vis": "^4.20.0",
-    "wavesurfer": "rom1504/wavesurfer.js#fork"
+    "wavesurfer.js": "^1.4.0"
   }
 }
