@@ -78,6 +78,9 @@
       hammer.on('singletap', function(event) {
         height = touchLayer.clientHeight;
         width = touchLayer.clientWidth;
+        if (player.paused&&player.currentTime==0){
+          player.play();
+        }
         circle.center(event.center.x,event.center.y);
         circle.animate(500).fill({opacity:0.8}).animate(500).fill({opacity:0});
         console.log({'type': event.type,
