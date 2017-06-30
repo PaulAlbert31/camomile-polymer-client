@@ -6,6 +6,12 @@
 <dom-module id="camomile-layer-select">
 
   <template>
+  <style>
+  :host {
+    z-index:50;
+    position: relative;
+  }
+  </style>
     <paper-dropdown-menu-light label="Layer" id="layer">
       <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{layer}}" attr-for-selected="id">
         <template is="dom-repeat" items="{{layers}}">

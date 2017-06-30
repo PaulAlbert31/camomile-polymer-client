@@ -7,17 +7,13 @@
 
   <template>
   <style>
-    html,body{
-      overflow-y: hidden;
-    }
-     #interactivePlayer { position:relative; width:100%;height:100%;z-index:0}
-     #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1 }
-     #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 2}
-     #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:3}
-     #player1{display: none}
+     #interactivePlayer { position:relative;; width:100%;height:100%;z-index:2}
+     #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1;}
+     #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 1}
+     #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1}
   </style>
   <video id="video"
-  width="640" height="480" poster='lib/poster.gif'>
+  width="640" height="480" >
   <source src="{{medium_url}}" type="video/{{format}}">
   </video>
   <div id='drawing'></>
@@ -181,7 +177,7 @@
         this.format = mediumView.format;
         this.$.video.load();
         var elem=document.getElementById('player1').$.drawing;
-        document.getElementById('player1').style.display='block';
+        document.getElementById('player1').$.video.display='block';
       }
 
 

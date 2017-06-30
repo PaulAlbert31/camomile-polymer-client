@@ -9,6 +9,13 @@
 <dom-module id="camomile-corpus-select">
 
   <template>
+    <style>
+    :host {
+      z-index:50;
+      position: relative;
+    }
+    </style>
+
     <paper-dropdown-menu-light label="Corpus" id="corpus">
       <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{corpus}}" attr-for-selected="id">
         <template is="dom-repeat" items="{{corpora}}">
