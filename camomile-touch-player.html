@@ -19,16 +19,22 @@
   html,body{
     overflow: hidden;
   }
-  #interactivePlayer { position:absolute; width:100%;height:100%;z-index:51; white-space: nowrap;overflow: hidden;}
   #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1;}
-  #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 2}
-  #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:3}
   </style>
   <video id="video" autoplay
   width="640" height="480" >
   <source src="{{medium_url}}" type="video/{{format}}">
   </video>
   <div id='drawing'></>
+    <style>
+    html,body{
+      overflow: hidden;
+    }
+    #interactivePlayer { position:absolute; width:100%;height:100%;z-index:2; white-space: nowrap;overflow: hidden;}
+    #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 3}
+    #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:4}
+    </style>
+    <div id ='touch'>
     <script type="text/javascript">
 
     var lastMove=null;
@@ -44,11 +50,6 @@
       player.play();
       console.log('play');
     })
-    window.onload = function() {
-      var pElement = document.getElementById("myVideo");
-      pElement.load();
-      pElement.play();
-    };
 
     var _wrap = function() {
       //   try{
@@ -187,6 +188,7 @@
         event.preventDefault();
       }
       </script>
+    </div>
     </template>
 
     <script>
