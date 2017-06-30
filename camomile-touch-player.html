@@ -23,6 +23,15 @@
     var i=0;
     var start=[0,0,0];
     var player = document.getElementById('player1').$.video;
+    var btn=document.createElement('BUTTON');
+    btn.id='boutton';
+    var t = document.createTextNode('PLAY')
+    btn.appendChild(t);
+    document.body.appendChild(btn);
+    btn.addEventListener("tap",function () {
+      player.play();
+      console.log('play');
+    })
 
     var _wrap = function() {
     //   try{
