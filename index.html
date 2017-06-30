@@ -22,23 +22,27 @@
   <style>
     body {
       background-color:#eee;
-    }
+        }
+    #vid{clear: both;}
+    #log{float:left}
   </style>
 </head>
 
 <body>
 <camomile-endpoint id="camomile1"></camomile-endpoint>
+<div id = 'log'>
 <div>
   <camomile-login id="user1" src-endpoint="camomile1"></camomile-login>
 </div>
 <div>
   <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
   <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
+</div>
+</div>
+<div id = 'vid'>
   <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
   <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
-
-
-
 </div>
+
 </body>
 </html>
