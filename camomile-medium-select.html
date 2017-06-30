@@ -6,6 +6,12 @@
 <dom-module id="camomile-medium-select">
 
   <template>
+  <style>
+  :host {
+    z-index:50;
+    position: relative;
+  }
+  </style>
     <paper-dropdown-menu-light label="Medium" id="medium">
       <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{medium}}" attr-for-selected="id">
         <template is="dom-repeat" items="{{media}}">
