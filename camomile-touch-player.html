@@ -1,9 +1,7 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <script src="getElementAt.js"></script>
-<script src="node_modules/video.js/dist/video.js"></script>
 <script src="node_modules/hammerjs/hammer.min.js"></script>
 <script src="node_modules/svgjs/dist/svg.min.js"></script>
-<script src="lib/videojs-touch.js"></script>
 
 <dom-module id="camomile-touch-player">
 
@@ -12,10 +10,10 @@
     html,body{
       overflow-y: hidden;
     }
-     #interactivePlayer { position:relative; width:100%;}
-     #video { top: 0; left: 0; width:640; height:480; z-index:1 }
-     #drawing{top:0;left:0;width: 640;height:480;z-index: 2}
-     #interaction {top: 0; left: 0; width:640; height:480; z-index:3 }
+     #interactivePlayer { position:relative; width:100%;height:100%;z-index:0;border:10px solid black}
+     #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1 }
+     #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 2}
+     #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:3}
   </style>
   <video id="video"
   width="640" height="480" poster='lib/poster.gif'>
@@ -27,41 +25,33 @@
     var lastMove=null;
     var i=0;
     var start=[0,0,0];
-
+    var player = document.getElementById('player1').$.video;
 
     var _wrap = function() {
 
-      var videoElement = this.el();
+    //   try{
+    //   document.getElementById('interactivePlayer').parentNode.removeChild('interactivePlayer');
+    //   document.getElementById('interaction').parentNode.removeChild('interaction');
+    // }catch(e){
+    //   console.log();
+    // }
+      var videoElement = this;
       var parent = videoElement.parentNode;
-
-      var draw=SVG('drawing').size(this.videoWidth(),this.videoHeight());
-      var circle=draw.circle(this.videoHeight()/20).fill({color:'#f06',opacity:0});
-      var arrow=draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+      var videoHeight = document.getElementById('player1').$.video.clientHeight;
+      var videoWidth = document.getElementById('player1').$.video.clientWidth;
+      var drawing=document.getElementById('player1').$.drawing;
+      console.log(parent);
+    if(document.getElementById('player1').$.video.parentNode.id==undefined){
       var wrapper = document.createElement('div');
-      wrapper.id = 'interactivePlayer';
-      // see "how to maintain the aspect ratio of a div using only CSS
-      // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
-      var videoHeight = this.videoHeight();
-      var videoWidth = this.videoWidth();
-
-      // Work in progress
-      // var arrowHead = draw.marker(2,2,function(add) {
-      //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
-      // });
-      //
-      // arrow.marker('end',arrowHead)
-
-      wrapper.style.paddingBottom = 100 * videoHeight / videoWidth + "%";
-
       parent.replaceChild(wrapper, videoElement);
-      wrapper.appendChild(videoElement);
-
-
-      // add touch overlay on top of player
+      wrapper.id = 'interactivePlayer';
+      wrapper.style.paddingBottom = 100 * videoHeight / videoWidth + "%";
       var touchLayer = document.createElement('div');
       touchLayer.id = 'interaction';
+      wrapper.appendChild(videoElement);
+      wrapper.appendChild(drawing);
       wrapper.appendChild(touchLayer);
-
+      this.draw=SVG(document.getElementById('player1').$.drawing).size(videoWidth,videoHeight);
       // add Hammer to touch overlay
       var hammer = new Hammer.Manager(touchLayer);
       // Tap recognizer with minimal 2 taps
@@ -88,11 +78,10 @@
         console.log({'type': event.type,
         'x': event.center.x/width,
         'y': event.center.y/height,
-        'currentTime': player.currentTime()});
+        'currentTime': player.currentTime});
       });
-
       hammer.on('doubletap', function() {
-        if (player.paused()) {
+        if (player.paused) {
           player.play()
         } else {
           player.pause()
@@ -105,7 +94,7 @@
           player.playbackRate+=0.2;
           console.log(player.playbackRate)
           console.log({'type': event.type,
-          'currentTime': player.currentTime(),'i':i});
+          'currentTime': player.currentTime,'i':i});
         } else if(player.playbackRate<1.9){
           i++;
         }
@@ -118,7 +107,7 @@
           player.playbackRate-=0.2;
           console.log(player.playbackRate)
           console.log({'type': event.type,
-          'currentTime': player.currentTime(),'i':i});
+          'currentTime': player.currentTime,'i':i});
         } else if(player.playbackRate>0.41){
           i++;
         }
@@ -127,11 +116,11 @@
       hammer.on('panstart', function(event) {
         height = touchLayer.clientHeight;
         width = touchLayer.clientWidth;
-        start=[event.center.x,event.center.y,player.currentTime()]
+        start=[event.center.x,event.center.y,player.currentTime]
         console.log({'type': event.type,
         'x': event.center.x/width,
         'y': event.center.y/height,
-        'currentTime': player.currentTime()});
+        'currentTime': player.currentTime});
       });
       hammer.on('panend', function(event) {
         height = touchLayer.clientHeight;
@@ -139,20 +128,37 @@
         console.log({'type': event.type,
         'x': event.center.x/width,
         'y': event.center.y/height,
-        'currentTime': player.currentTime(),'delta':player.currentTime()-start[2]<3});
-        if (player.currentTime()-start[2]<2) {
+        'currentTime': player.currentTime,'delta':player.currentTime-start[2]<3});
+        if (player.currentTime-start[2]<2) {
           arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],event.center.x,event.center.y).animate(1000).stroke({opacity:0});
         }
       });
+    }else{
+      var wrapper=parent;
+      var touchLayer = document.getElementById('player1').$.drawing.parentNode;
+      console.log(document.getElementById('player1').$.drawing.parentNode);
+      console.log(document);
+    }
+    var circle=this.draw.circle(this.height/20).fill({color:'#f06',opacity:0});
+    var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+      // see "how to maintain the aspect ratio of a div using only CSS
+      // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
+
+
+      // Work in progress
+      // var arrowHead = draw.marker(2,2,function(add) {
+      //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
+      // });
+      //
+      // arrow.marker('end',arrowHead)
+
             player.play();
     };
-    var player = document.getElementById('player1').$.video;
-    player.on('loadedmetadata', _wrap);
-    player.on('canplay',function(){
-      console.log('canplay')
+    player.addEventListener('loadedmetadata', _wrap);
+    player.addEventListener('canplay',function(){
+      console.log('canplay');
     });
 
-    // var touchPlayer = TouchPlayer('player', options...)
     document.ontouchmove = function(event){
       event.preventDefault();
     }
@@ -174,19 +180,8 @@
         this.medium_url = mediumView.medium_url;
         this.format = mediumView.format;
         this.$.video.load();
-        // try {
-        //   this.player.dispose();
-        // } catch (e) {
-        //   console.log(e);
-        // }
-        // if (typeof this.player=='undefined'){
-        //   this.player=videojs(this.$.video);
-        //   this.player.touch({'singletap':function(event){console.log({'touché':this})},'doubletap':function(){if (this.paused()){this.play()}else{this.pause()}}});
-        //   console.log('new');
-        // }
-        // console.log(this);
-        // this.player.src({src:mediumView.medium_url,type:('video/web',this.format)});
-        // this.player.load();
+        var elem=document.getElementById('player1').$.drawing;
+        console.log(document.getElementById('player1').$);
       }
 
 
