@@ -15,282 +15,277 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-  <style>
-  html,body{
-    overflow: hidden;
-  }
-  #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1;}
-  </style>
-  <video id="video" autoplay
+  <video id="video"
   width="640" height="480" >
   <source src="{{medium_url}}" type="video/{{format}}">
   </video>
   <div id='drawing'></>
-    <style>
-    html,body{
-      overflow: hidden;
-    }
-    #interactivePlayer { position:absolute; width:100%;height:100%;z-index:2; white-space: nowrap;overflow: hidden;}
-    #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 3}
-    #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:4}
-    </style>
-    <div id ='touch'>
-    <script type="text/javascript">
+  <style>
+  html,body{
+    overflow: hidden;
+  }
+  #video { position:relative; width:100%;height:100%;z-index:1;overflow: hidden;}
+  #interactivePlayer { position:relative;top:0;left: 0;width:100%;height:100%;z-index:1;overflow: hidden;}
+  #drawing{position: absolute;top:0;left:0;width:100%;height:100%;z-index: 1;position:fixed}
+  #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1;}
+  </style>
+  <script type="text/javascript">
 
-    var lastMove=null;
-    var i=0;
-    var start=[0,0,0];
-    var player = document.getElementById('player1').$.video;
-    var btn=document.createElement('BUTTON');
-    btn.id='boutton';
-    var t = document.createTextNode('PLAY')
-    btn.appendChild(t);
-    document.body.appendChild(btn);
-    btn.addEventListener("tap",function () {
-      player.play();
-      console.log('play');
-    })
+  var lastMove=null;
+  var i=0;
+  var start=[0,0,0];
+  var player = document.getElementById('player1').$.video;
+  var btn=document.createElement('BUTTON');
+  btn.id='boutton';
+  var t = document.createTextNode('PLAY')
+  btn.appendChild(t);
+  document.body.appendChild(btn);
+  btn.addEventListener("tap",function () {
+    player.play();
+    console.log('play');
+  })
 
-    var _wrap = function() {
-      //   try{
-      //   document.getElementById('interactivePlayer').parentNode.removeChild('interactivePlayer');
-      //   document.getElementById('interaction').parentNode.removeChild('interaction');
-      // }catch(e){
-      //   console.log();
-      // }
-      var videoElement = this;
-      var parent = videoElement.parentNode;
-      var videoHeight = document.getElementById('player1').$.video.clientHeight;
-      var videoWidth = document.getElementById('player1').$.video.clientWidth;
-      var drawing=document.getElementById('player1').$.drawing;
-      console.log(parent);
-      if(document.getElementById('player1').$.video.parentNode.id==undefined){
-        var wrapper = document.createElement('div');
-        parent.replaceChild(wrapper, videoElement);
-        wrapper.id = 'interactivePlayer';
-        wrapper.style.paddingBottom = 100 * videoHeight / videoWidth + "%";
-        var touchLayer = document.createElement('div');
-        touchLayer.id = 'interaction';
-        wrapper.appendChild(videoElement);
-        wrapper.appendChild(drawing);
-        wrapper.appendChild(touchLayer);
-        this.draw=SVG(document.getElementById('player1').$.drawing).size(videoWidth,videoHeight);
-        // add Hammer to touch overlay
-        var hammer = new Hammer.Manager(touchLayer);
-        // Tap recognizer with minimal 2 taps
-        hammer.add( new Hammer.Tap({ event: 'doubletap', taps: 2, interval:500, posThreshold:50 }) );
-        // Single tap recognizer
-        hammer.add( new Hammer.Tap({ event: 'singletap' }) );
-        // Pan recognizer
-        hammer.add(new Hammer.Pan({event:'pan', threshold:1}));
-        // Pinch recognizer
-        hammer.add(new Hammer.Pinch({event:'pinch'}))
+  var _wrap = function() {
+    //   try{
+    //   document.getElementById('interactivePlayer').parentNode.removeChild('interactivePlayer');
+    //   document.getElementById('interaction').parentNode.removeChild('interaction');
+    // }catch(e){
+    //   console.log();
+    // }
+    var videoElement = document.getElementById('player1').$.video;
+    var parent = videoElement.parentNode
+    var videoHeight = document.getElementById('player1').$.video.clientHeight;
+    var videoWidth = document.getElementById('player1').$.video.clientWidth;
+    var drawing=document.getElementById('player1').$.drawing;
+    if(document.getElementById('player1').$.video.parentNode.id==undefined){
+      var wrapper = document.createElement('div');
+      parent.appendChild(wrapper);
+      console.log(videoElement.clientWidth);
+      wrapper.id = 'interactivePlayer';
+      // wrapper.style.paddingBottom = 100 * videoHeight / videoWidth + "%";
+      var touchLayer = document.createElement('div');
+      touchLayer.id = 'interaction';
+      wrapper.appendChild(videoElement);
+      wrapper.appendChild(drawing);
+      wrapper.appendChild(touchLayer);
+      console.log(touchLayer.clientHeight);
+      console.log(wrapper.clientWidth);
+      this.draw=SVG(document.getElementById('player1').$.drawing).size(videoWidth,videoHeight);
+      // add Hammer to touch overlay
+      var hammer = new Hammer.Manager(touchLayer);
+      // Tap recognizer with minimal 2 taps
+      hammer.add( new Hammer.Tap({ event: 'doubletap', taps: 2, interval:500, posThreshold:50 }) );
+      // Single tap recognizer
+      hammer.add( new Hammer.Tap({ event: 'singletap' }) );
+      // Pan recognizer
+      hammer.add(new Hammer.Pan({event:'pan', threshold:1}));
+      // Pinch recognizer
+      hammer.add(new Hammer.Pinch({event:'pinch'}))
 
-        // we want to recognize this simulatenous, so a doubletap will be detected even while a tap has been recognized.
-        hammer.get('doubletap').recognizeWith('singletap');
-        // we only want to trigger a tap, when we don't have detected a doubletap
-        hammer.get('singletap').requireFailure('doubletap');
-        // we only want to pinch if taps fail
-        hammer.get('pan').requireFailure('pinch')
+      // we want to recognize this simulatenous, so a doubletap will be detected even while a tap has been recognized.
+      hammer.get('doubletap').recognizeWith('singletap');
+      // we only want to trigger a tap, when we don't have detected a doubletap
+      hammer.get('singletap').requireFailure('doubletap');
+      // we only want to pinch if taps fail
+      hammer.get('pan').requireFailure('pinch')
 
-        hammer.on('singletap', function(event) {
+      hammer.on('singletap', function(event) {
+        height = touchLayer.clientHeight;
+        width = touchLayer.clientWidth;
+        if (player.paused&&player.currentTime==0){
+          player.play();
+        }else{
+          circle.center(event.center.x,event.center.y);
+          circle.animate(500).fill({opacity:0.8}).animate(500).fill({opacity:0});
+          console.log({'type': event,
+          'x': event.center.x/width,
+          'y': event.center.y/height,
+          'currentTime': player.currentTime});
+        }});
+        hammer.on('doubletap', function() {
+          if (player.paused) {
+            player.play()
+          } else {
+            player.pause()
+          }
+        });
+
+        hammer.on('pinchout', function(event) {
+          if (i==8&&player.playbackRate<1.9) {
+            i=0;
+            player.playbackRate+=0.2;
+            console.log(player.playbackRate)
+            console.log({'type': event.type,
+            'currentTime': player.currentTime,'i':i});
+          } else if(player.playbackRate<1.9){
+            i++;
+          }
+
+        });
+
+        hammer.on('pinchin', function(event) {
+          if (i==8&&player.playbackRate>0.41) {
+            i=0;
+            player.playbackRate-=0.2;
+            console.log(player.playbackRate)
+            console.log({'type': event.type,
+            'currentTime': player.currentTime,'i':i});
+          } else if(player.playbackRate>0.41){
+            i++;
+          }
+        });
+
+        hammer.on('panstart', function(event) {
           height = touchLayer.clientHeight;
           width = touchLayer.clientWidth;
-          if (player.paused&&player.currentTime==0){
-            player.play();
-          }else{
-            circle.center(event.center.x,event.center.y);
-            circle.animate(500).fill({opacity:0.8}).animate(500).fill({opacity:0});
-            console.log({'type': event.type,
-            'x': event.center.x/width,
-            'y': event.center.y/height,
-            'currentTime': player.currentTime});
-          }});
-          hammer.on('doubletap', function() {
-            if (player.paused) {
-              player.play()
-            } else {
-              player.pause()
-            }
-          });
-
-          hammer.on('pinchout', function(event) {
-            if (i==8&&player.playbackRate<1.9) {
-              i=0;
-              player.playbackRate+=0.2;
-              console.log(player.playbackRate)
-              console.log({'type': event.type,
-              'currentTime': player.currentTime,'i':i});
-            } else if(player.playbackRate<1.9){
-              i++;
-            }
-
-          });
-
-          hammer.on('pinchin', function(event) {
-            if (i==8&&player.playbackRate>0.41) {
-              i=0;
-              player.playbackRate-=0.2;
-              console.log(player.playbackRate)
-              console.log({'type': event.type,
-              'currentTime': player.currentTime,'i':i});
-            } else if(player.playbackRate>0.41){
-              i++;
-            }
-          });
-
-          hammer.on('panstart', function(event) {
-            height = touchLayer.clientHeight;
-            width = touchLayer.clientWidth;
-            start=[event.center.x,event.center.y,player.currentTime]
-            console.log({'type': event.type,
-            'x': event.center.x/width,
-            'y': event.center.y/height,
-            'currentTime': player.currentTime});
-          });
-          hammer.on('panend', function(event) {
-            height = touchLayer.clientHeight;
-            width = touchLayer.clientWidth;
-            console.log({'type': event.type,
-            'x': event.center.x/width,
-            'y': event.center.y/height,
-            'currentTime': player.currentTime,'delta':player.currentTime-start[2]<3});
-            if (player.currentTime-start[2]<2) {
-              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],event.center.x,event.center.y).animate(1000).stroke({opacity:0});
-            }
-          });
-        }else{
-          var wrapper=parent;
-          var touchLayer = document.getElementById('player1').$.drawing.parentNode;
-          console.log(document.getElementById('player1').$.drawing.parentNode);
-          console.log(document);
-        }
-        var circle=this.draw.circle(this.height/20).fill({color:'#f06',opacity:0});
-        var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
-        // see "how to maintain the aspect ratio of a div using only CSS
-        // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
-
-
-        // Work in progress
-        // var arrowHead = draw.marker(2,2,function(add) {
-        //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
-        // });
-        //
-        // arrow.marker('end',arrowHead)
-
-      };
-      player.addEventListener('loadedmetadata', _wrap);
-      player.addEventListener('canplay',function(){
-        console.log('canplay');
-      });
-
-      document.ontouchmove = function(event){
-        event.preventDefault();
-      }
-      </script>
-    </div>
-    </template>
-
-    <script>
-    class CamomilePlayer extends Polymer.Element {
-      static get is() {
-        return "camomile-touch-player";
-      }
-
-      constructor() {
-        super();
-      }
-
-      _setupMediumView(mediumView) {
-        console.log("setting player",this.id,"to",mediumView.medium_url);
-        this.medium_url = mediumView.medium_url;
-        this.format = mediumView.format;
-        this.$.video.load();
-        var elem=document.getElementById('player1').$.drawing;
-        document.getElementById('player1').$.video.display='block';
-      }
-
-
-      _resetMediumView() {
-        console.log("reset player",this.id);
-        this.medium_url="";
-        this.format="";
-        this.$.video.load();
-      }
-
-      ready() {
-
-        super.ready();
-        let syncCurrentTime;
-        let syncAll;
-        let syncPlaying;
-        this.video=this.$.video;
-
-
-        if(this.syncAll) {
-          syncAll = getElementAt(this.syncAll);
-
-          if(syncAll.medium) {
-            this._setupMediumView(syncAll);
+          start=[event.center.x,event.center.y,player.currentTime]
+          console.log({'type': event.type,
+          'x': event.center.x/width,
+          'y': event.center.y/height,
+          'currentTime': player.currentTime});
+        });
+        hammer.on('panend', function(event) {
+          height = touchLayer.clientHeight;
+          width = touchLayer.clientWidth;
+          console.log({'type': event.type,
+          'x': event.center.x/width,
+          'y': event.center.y/height,
+          'currentTime': player.currentTime,'delta':player.currentTime-start[2]<3});
+          if (player.currentTime-start[2]<2) {
+            arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],event.center.x,event.center.y).animate(1000).stroke({opacity:0});
           }
+        });
+      }else{
+        var wrapper=parent;
+        var touchLayer = document.getElementById('player1').$.drawing.parentNode;
+        console.log(document.getElementById('player1').$.drawing.parentNode);
+        console.log(document);
+      }
+      var circle=this.draw.circle(this.height/20).fill({color:'#f06',opacity:0});
+      var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+      // see "how to maintain the aspect ratio of a div using only CSS
+      // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
 
-          syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
-          syncAll.addEventListener("reset", () => this._resetMediumView());
-          syncCurrentTime=syncAll;
-          syncPlaying=syncAll;
+
+      // Work in progress
+      // var arrowHead = draw.marker(2,2,function(add) {
+      //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
+      // });
+      //
+      // arrow.marker('end',arrowHead)
+
+    };
+    player.addEventListener('loadedmetadata', _wrap);
+    player.addEventListener('canplay',function(){
+      console.log('canplay');
+    });
+
+    document.ontouchmove = function(event){
+      event.preventDefault();
+    }
+    </script>
+  </template>
+
+  <script>
+  class CamomilePlayer extends Polymer.Element {
+    static get is() {
+      return "camomile-touch-player";
+    }
+
+    constructor() {
+      super();
+    }
+
+    _setupMediumView(mediumView) {
+      console.log("setting player",this.id,"to",mediumView.medium_url);
+      this.medium_url = mediumView.medium_url;
+      this.format = mediumView.format;
+      this.$.video.load();
+      var elem=document.getElementById('player1').$.drawing;
+      document.getElementById('player1').$.video.display='block';
+    }
+
+
+    _resetMediumView() {
+      console.log("reset player",this.id);
+      this.medium_url="";
+      this.format="";
+      this.$.video.load();
+    }
+
+    ready() {
+
+      super.ready();
+      let syncCurrentTime;
+      let syncAll;
+      let syncPlaying;
+      this.video=this.$.video;
+
+
+      if(this.syncAll) {
+        syncAll = getElementAt(this.syncAll);
+
+        if(syncAll.medium) {
+          this._setupMediumView(syncAll);
         }
 
-        if(this.syncCurrentTime) {
-          syncCurrentTime = getElementAt(this.syncCurrentTime);
+        syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
+        syncAll.addEventListener("reset", () => this._resetMediumView());
+        syncCurrentTime=syncAll;
+        syncPlaying=syncAll;
+      }
 
-          if(syncCurrentTime.medium) {
-            this._setupMediumView(syncCurrentTime)
-          }
-          syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
-          syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
+      if(this.syncCurrentTime) {
+        syncCurrentTime = getElementAt(this.syncCurrentTime);
+
+        if(syncCurrentTime.medium) {
+          this._setupMediumView(syncCurrentTime)
         }
+        syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
+        syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
+      }
 
-        if(this.syncPlaying) {
-          syncPlaying = getElementAt(this.syncPlaying);
+      if(this.syncPlaying) {
+        syncPlaying = getElementAt(this.syncPlaying);
 
-          if(syncPlaying.medium) {
-            this._setupMediumView(syncPlaying)
-          }
-          syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
-          syncPlaying.addEventListener("reset", () => this._resetMediumView());
+        if(syncPlaying.medium) {
+          this._setupMediumView(syncPlaying)
         }
+        syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
+        syncPlaying.addEventListener("reset", () => this._resetMediumView());
+      }
 
-        if(syncCurrentTime) {
-          this.video.addEventListener("timeupdate",() => {
-            syncCurrentTime.publish(this.id,"currentTime",this.video.currentTime);
-          });
-          syncCurrentTime.subscribe(this.id,"currentTime",() => {
-            this.video.currentTime=syncCurrentTime.currentTime;
-          });
-        }
-
-
-        if(syncPlaying) {
-          this.video.addEventListener("play", () => {
-            syncPlaying.publish(this.id,"playing",true);
-          });
-          this.video.addEventListener("pause", () => {
-            syncPlaying.publish(this.id,"playing",false);
-          });
-        }
+      if(syncCurrentTime) {
+        this.video.addEventListener("timeupdate",() => {
+          syncCurrentTime.publish(this.id,"currentTime",this.video.currentTime);
+        });
+        syncCurrentTime.subscribe(this.id,"currentTime",() => {
+          this.video.currentTime=syncCurrentTime.currentTime;
+        });
       }
 
 
-      static get properties() {
-        return {
-          syncCurrentTime: String,
-          syncPlaying: String,
-          syncAll: String,
-          id: String
-        }
+      if(syncPlaying) {
+        this.video.addEventListener("play", () => {
+          syncPlaying.publish(this.id,"playing",true);
+        });
+        this.video.addEventListener("pause", () => {
+          syncPlaying.publish(this.id,"playing",false);
+        });
       }
     }
-    customElements.define(CamomilePlayer.is, CamomilePlayer);
-    </script>
 
-  </dom-module>
+
+    static get properties() {
+      return {
+        syncCurrentTime: String,
+        syncPlaying: String,
+        syncAll: String,
+        id: String
+      }
+    }
+  }
+  customElements.define(CamomilePlayer.is, CamomilePlayer);
+  </script>
+
+</dom-module>
