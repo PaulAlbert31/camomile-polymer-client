@@ -10,10 +10,11 @@
     html,body{
       overflow-y: hidden;
     }
-     #interactivePlayer { position:relative; width:100%;height:100%;z-index:0;border:10px solid black}
+     #interactivePlayer { position:relative; width:100%;height:100%;z-index:0}
      #video { position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:1 }
      #drawing{position: absolute;;top:0;left:0;width:100%;height:100%;z-index: 2}
      #interaction {position:absolute;top: 0; left: 0; width:100%; height:100%; z-index:3}
+     #player1{display: none}
   </style>
   <video id="video"
   width="640" height="480" poster='lib/poster.gif'>
@@ -28,7 +29,6 @@
     var player = document.getElementById('player1').$.video;
 
     var _wrap = function() {
-
     //   try{
     //   document.getElementById('interactivePlayer').parentNode.removeChild('interactivePlayer');
     //   document.getElementById('interaction').parentNode.removeChild('interaction');
@@ -181,7 +181,7 @@
         this.format = mediumView.format;
         this.$.video.load();
         var elem=document.getElementById('player1').$.drawing;
-        console.log(document.getElementById('player1').$);
+        document.getElementById('player1').style.display='block';
       }
 
 
