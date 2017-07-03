@@ -15,7 +15,7 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video" autoplay muted
+    <video id="video"
     width=auto height=auto >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -23,7 +23,7 @@
     html,body{
       overflow-y: hidden;
     }
-    #button{appearance:push-button}
+    #button{cursor: pointer;}
     </style>
     <script type="text/javascript">
 
@@ -43,7 +43,6 @@
         button.addEventListener('tap',function(){
           player.play();
         })
-        console.log(button.getAttribute('appearance'));
         var wrapper = document.createElement('div');
 
         wrapper.id = 'interactivePlayer';
@@ -199,7 +198,6 @@
         this.format = mediumView.format;
         this.$.video.load();
         window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
-        this.$.video.play();
       }
 
 
