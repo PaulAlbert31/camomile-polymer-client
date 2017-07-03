@@ -23,14 +23,15 @@
     body {
       background-color:#eee;
         }
-    #vid{clear: both;}
-    #log{float:left}
+        #interactivePlayer { position:relative; width:640;height:480}
+        #video { position:absolute; top: 0; left: 0; width:640; height:480; z-index:1;}
+        #interaction { position:absolute; top: 0; left: 0; width:640; height:480; z-index:3 }
   </style>
 </head>
 
-<body>
-<camomile-endpoint id="camomile1"></camomile-endpoint>
+<body id ='b'>
 <div id = 'log'>
+  <camomile-endpoint id="camomile1"></camomile-endpoint>
 <div>
   <camomile-login id="user1" src-endpoint="camomile1"></camomile-login>
 </div>
