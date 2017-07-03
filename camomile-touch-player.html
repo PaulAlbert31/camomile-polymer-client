@@ -23,8 +23,7 @@
     html,body{
       overflow-y: hidden;
     }
-    #interaction{z-index: 566}
-    #video{z-index:1}
+    #button{--webkit-appearance:push-button}
     </style>
     <script type="text/javascript">
 
@@ -94,10 +93,10 @@
           if (player.paused&&player.currentTime==0){
             player.play();
           }else{
-            circle.center((event.center.x-offsetX),event.center.y-offsetY);
+            circle.center((event.center.x),event.center.y-offsetY);
             circle.fill({opacity:0.8}).animate(500).fill({opacity:0});
             console.log({'type': event,
-            'x': (event.center.x-offsetX)/width,
+            'x': (event.center.x)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
           }});
@@ -138,10 +137,10 @@
             height = videoElement.clientHeight;
             width = videoElement.clientWidth;
             offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
-            start=[(event.center.x-offsetX),event.center.y-offsetY,player.currentTime]
+            start=[(event.center.x),event.center.y-offsetY,player.currentTime]
             offsetX=document.getElementById('vid').offsetLeft;
             console.log({'type': event.type,
-            'x': (event.center.x-offsetX)/width,
+            'x': (event.center.x)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
           });
@@ -151,11 +150,11 @@
             offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
             offsetX=document.getElementById('vid').offsetLeft;
             console.log({'type': event.type,
-            'x': (event.center.x-offsetX)/width,
+            'x': (event.center.x)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
             if (player.currentTime-start[2]<2) {
-              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x-offsetX),event.center.y-offsetY).animate(1000).stroke({opacity:0});
+              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x),event.center.y-offsetY).animate(1000).stroke({opacity:0});
             }
           });
         }else{

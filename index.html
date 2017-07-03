@@ -23,7 +23,7 @@
     body {
       background-color:#DCD6D5;
         }
-        #interactivePlayer { z-index:1;position:relative;height:auto;width: auto;display: inline-block;left:0}
+        #interactivePlayer { z-index:1;position:relative;height:auto;width: auto;display: inline-block;left:-8px}
         #video { position:absolute;height:auto;width:auto;z-index:1;}
         #interaction { position:absolute;height:auto;width:auto; z-index:3;}
   </style>
@@ -32,9 +32,7 @@
 <body id ='b'>
 <div id = 'log'>
   <camomile-endpoint id="camomile1"></camomile-endpoint>
-<div>
   <camomile-login id="user1" src-endpoint="camomile1"></camomile-login>
-</div>
 <div>
   <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
   <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
