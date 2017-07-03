@@ -34,9 +34,6 @@
     var videoHeight = videoElement.clientHeight;
     var videoWidth = videoElement.clientHeight;
     var parent = document.getElementById('vid');
-    function butFunc(){
-      player.play();
-    }
     function _wrap(){
       if(videoElement.parentNode.id==undefined){
 
@@ -54,7 +51,6 @@
         //
         // arrow.marker('end',arrowHead)
         parent.replaceChild(wrapper, document.getElementById('player1'));
-
         // add touch overlay on top of player
         var touchLayer = document.createElement('div');
         touchLayer.id = 'interaction';
@@ -175,7 +171,11 @@
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');
-      });
+        var but=document.getElementById('button');
+        but.addEventListener('tap',function(){
+          player.play()
+          console.log('touch');
+        });
       </script>
     </template>
 
