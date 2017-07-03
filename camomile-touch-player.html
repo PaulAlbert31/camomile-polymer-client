@@ -23,7 +23,7 @@
     html,body{
       overflow-y: hidden;
     }
-    #button{--webkit-appearance:push-button}
+    #button{appearance:push-button}
     </style>
     <script type="text/javascript">
 
@@ -43,7 +43,7 @@
         button.addEventListener('tap',function(){
           player.play();
         })
-
+        console.log(button.getAttribute('appearance'));
         var wrapper = document.createElement('div');
 
         wrapper.id = 'interactivePlayer';
@@ -180,10 +180,6 @@
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');
       });
-
-      document.ontouchmove = function(event){
-        event.preventDefault();
-      }
       </script>
     </template>
 
@@ -202,6 +198,8 @@
         this.medium_url = mediumView.medium_url;
         this.format = mediumView.format;
         this.$.video.load();
+        window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
+        this.$.video.play();
       }
 
 
