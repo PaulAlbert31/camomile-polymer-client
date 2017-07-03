@@ -15,7 +15,7 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video"
+    <video id="video" controls
     width="640" height="480" >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -92,11 +92,11 @@
           if (player.paused&&player.currentTime==0){
             player.play();
           }else{
-            circle.center(event.center.x,event.center.y-offset);
+            circle.center(event.center.x,event.center.y);
             circle.animate(500).fill({opacity:0.8}).animate(500).fill({opacity:0});
             console.log({'type': event,
             'x': event.center.x/width,
-            'y': (event.center.y-offset)/height,
+            'y': (event.center.y)/height,
             'currentTime': player.currentTime});
           }});
           hammer.on('doubletap', function() {
@@ -135,10 +135,10 @@
           hammer.on('panstart', function(event) {
             height = touchLayer.clientHeight;
             width = touchLayer.clientWidth;
-            start=[event.center.x,event.center.y-offset,player.currentTime]
+            start=[event.center.x,event.center.y,player.currentTime]
             console.log({'type': event.type,
             'x': event.center.x/width,
-            'y': (event.center.y-offset)/height,
+            'y': (event.center.y)/height,
             'currentTime': player.currentTime});
           });
           hammer.on('panend', function(event) {
@@ -146,10 +146,10 @@
             width = touchLayer.clientWidth;
             console.log({'type': event.type,
             'x': event.center.x/width,
-            'y': (event.center.y-offset)/height,
+            'y': (event.center.y)/height,
             'currentTime': player.currentTime,'delta':player.currentTime-start[2]<3});
             if (player.currentTime-start[2]<2) {
-              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],event.center.x,event.center.y-offset).animate(1000).stroke({opacity:0});
+              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],event.center.x,event.center.y).animate(1000).stroke({opacity:0});
             }
           });
           console.log(document);
