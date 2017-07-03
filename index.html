@@ -44,6 +44,11 @@
   <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
   <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
 </div>
+<script>
+document.ontouchmove = function(event){
+  event.preventDefault();
+}
+</script>
 
 </body>
 </html>
