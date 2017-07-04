@@ -15,7 +15,7 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video"
+    <video id="video" controls
     width=auto height=auto >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -31,6 +31,7 @@
     var start=[0,0,0];
     var player = document.getElementById('player1').$.video;
     var videoElement = player;
+    console.log(document.getElementById('player1').$);
     var videoHeight = videoElement.clientHeight;
     var videoWidth = videoElement.clientHeight;
     var parent = document.getElementById('vid');
@@ -81,14 +82,14 @@
           width = videoElement.clientWidth;
           offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
           offsetX=document.getElementById('vid').offsetLeft;
-          console.log(event);
+          videoElement.controls=false;
           if (player.paused&&player.currentTime==0){
             player.play();
           }else{
-            circle.center((event.center.x),event.center.y-offsetY);
+            circle.center((event.center.x-offsetX),event.center.y-offsetY);
             circle.fill({opacity:0.8}).animate(500).fill({opacity:0});
             console.log({'type': event,
-            'x': (event.center.x)/width,
+            'x': (event.center.x-offsetX)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
           }});
@@ -129,10 +130,10 @@
             height = videoElement.clientHeight;
             width = videoElement.clientWidth;
             offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
-            start=[(event.center.x),event.center.y-offsetY,player.currentTime]
+            start=[(event.center.x-offsetX),event.center.y-offsetY,player.currentTime]
             offsetX=document.getElementById('vid').offsetLeft;
             console.log({'type': event.type,
-            'x': (event.center.x)/width,
+            'x': (event.center.x-offsetX)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
           });
@@ -142,11 +143,11 @@
             offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
             offsetX=document.getElementById('vid').offsetLeft;
             console.log({'type': event.type,
-            'x': (event.center.x)/width,
+            'x': (event.center.x-offsetX)/width,
             'y': (event.center.y-offsetY)/height,
             'currentTime': player.currentTime});
             if (player.currentTime-start[2]<2) {
-              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x),event.center.y-offsetY).animate(1000).stroke({opacity:0});
+              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x-offsetX),event.center.y-offsetY).animate(1000).stroke({opacity:0});
             }
           });
         }else{
@@ -166,18 +167,11 @@
         // });
         //
         // arrow.marker('end',arrowHead)
-
+        
       };
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');})
-        var but=document.getElementById('button');
-        but.addEventListener('touchstart',function(){
-          player.play();
-        });
-        but.addEventListener('click',function(){
-          player.play();
-        });
         </script>
       </template>
 
@@ -196,6 +190,7 @@
           this.medium_url = mediumView.medium_url;
           this.format = mediumView.format;
           this.$.video.load();
+          document.getElementById('vid').children[1].children[1].controls=true;
           window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
         }
 
