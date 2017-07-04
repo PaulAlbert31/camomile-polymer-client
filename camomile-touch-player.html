@@ -160,10 +160,10 @@
         // arrow.marker('end',arrowHead)
 
       };
-      videoElement.addEventListener('touchstart', _wrap,false);
-      videoElement.addEventListener('click', _wrap,false);
-      videoElement.addEventListener('canplay',function(){
-        console.log('canplay');})
+
+        videoElement.addEventListener('canplay',function(){
+        console.log('canplay');
+        _wrap()})
         </script>
       </template>
 
