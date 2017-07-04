@@ -170,114 +170,116 @@
       };
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
-        console.log('canplay');
+        console.log('canplay');})
         var but=document.getElementById('button');
-        but.addEventListener('tap',function(){
-          player.play()
-          console.log('touch');
+        but.addEventListener('touchstart',function(){
+          player.play();
         });
+        but.addEventListener('click',function(){
+          player.play();
+        });
+        </script>
+      </template>
+
+      <script>
+      class CamomilePlayer extends Polymer.Element {
+        static get is() {
+          return "camomile-touch-player";
+        }
+
+        constructor() {
+          super();
+        }
+
+        _setupMediumView(mediumView) {
+          console.log("setting player",this.id,"to",mediumView.medium_url);
+          this.medium_url = mediumView.medium_url;
+          this.format = mediumView.format;
+          this.$.video.load();
+          window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
+        }
+
+
+        _resetMediumView() {
+          console.log("reset player",this.id);
+          this.medium_url="";
+          this.format="";
+          this.$.video.load();
+        }
+
+        ready() {
+
+          super.ready();
+          let syncCurrentTime;
+          let syncAll;
+          let syncPlaying;
+          this.video=this.$.video;
+
+
+          if(this.syncAll) {
+            syncAll = getElementAt(this.syncAll);
+
+            if(syncAll.medium) {
+              this._setupMediumView(syncAll);
+            }
+
+            syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
+            syncAll.addEventListener("reset", () => this._resetMediumView());
+            syncCurrentTime=syncAll;
+            syncPlaying=syncAll;
+          }
+
+          if(this.syncCurrentTime) {
+            syncCurrentTime = getElementAt(this.syncCurrentTime);
+
+            if(syncCurrentTime.medium) {
+              this._setupMediumView(syncCurrentTime)
+            }
+            syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
+            syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
+          }
+
+          if(this.syncPlaying) {
+            syncPlaying = getElementAt(this.syncPlaying);
+
+            if(syncPlaying.medium) {
+              this._setupMediumView(syncPlaying)
+            }
+            syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
+            syncPlaying.addEventListener("reset", () => this._resetMediumView());
+          }
+
+          if(syncCurrentTime) {
+            this.video.addEventListener("timeupdate",() => {
+              syncCurrentTime.publish(this.id,"currentTime",this.video.currentTime);
+            });
+            syncCurrentTime.subscribe(this.id,"currentTime",() => {
+              this.video.currentTime=syncCurrentTime.currentTime;
+            });
+          }
+
+
+          if(syncPlaying) {
+            this.video.addEventListener("play", () => {
+              syncPlaying.publish(this.id,"playing",true);
+            });
+            this.video.addEventListener("pause", () => {
+              syncPlaying.publish(this.id,"playing",false);
+            });
+          }
+        }
+
+
+        static get properties() {
+          return {
+            syncCurrentTime: String,
+            syncPlaying: String,
+            syncAll: String,
+            id: String
+          }
+        }
+      }
+      customElements.define(CamomilePlayer.is, CamomilePlayer);
       </script>
-    </template>
 
-    <script>
-    class CamomilePlayer extends Polymer.Element {
-      static get is() {
-        return "camomile-touch-player";
-      }
-
-      constructor() {
-        super();
-      }
-
-      _setupMediumView(mediumView) {
-        console.log("setting player",this.id,"to",mediumView.medium_url);
-        this.medium_url = mediumView.medium_url;
-        this.format = mediumView.format;
-        this.$.video.load();
-        window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
-      }
-
-
-      _resetMediumView() {
-        console.log("reset player",this.id);
-        this.medium_url="";
-        this.format="";
-        this.$.video.load();
-      }
-
-      ready() {
-
-        super.ready();
-        let syncCurrentTime;
-        let syncAll;
-        let syncPlaying;
-        this.video=this.$.video;
-
-
-        if(this.syncAll) {
-          syncAll = getElementAt(this.syncAll);
-
-          if(syncAll.medium) {
-            this._setupMediumView(syncAll);
-          }
-
-          syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
-          syncAll.addEventListener("reset", () => this._resetMediumView());
-          syncCurrentTime=syncAll;
-          syncPlaying=syncAll;
-        }
-
-        if(this.syncCurrentTime) {
-          syncCurrentTime = getElementAt(this.syncCurrentTime);
-
-          if(syncCurrentTime.medium) {
-            this._setupMediumView(syncCurrentTime)
-          }
-          syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
-          syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
-        }
-
-        if(this.syncPlaying) {
-          syncPlaying = getElementAt(this.syncPlaying);
-
-          if(syncPlaying.medium) {
-            this._setupMediumView(syncPlaying)
-          }
-          syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
-          syncPlaying.addEventListener("reset", () => this._resetMediumView());
-        }
-
-        if(syncCurrentTime) {
-          this.video.addEventListener("timeupdate",() => {
-            syncCurrentTime.publish(this.id,"currentTime",this.video.currentTime);
-          });
-          syncCurrentTime.subscribe(this.id,"currentTime",() => {
-            this.video.currentTime=syncCurrentTime.currentTime;
-          });
-        }
-
-
-        if(syncPlaying) {
-          this.video.addEventListener("play", () => {
-            syncPlaying.publish(this.id,"playing",true);
-          });
-          this.video.addEventListener("pause", () => {
-            syncPlaying.publish(this.id,"playing",false);
-          });
-        }
-      }
-
-
-      static get properties() {
-        return {
-          syncCurrentTime: String,
-          syncPlaying: String,
-          syncAll: String,
-          id: String
-        }
-      }
-    }
-    customElements.define(CamomilePlayer.is, CamomilePlayer);
-    </script>
-
-  </dom-module>
+    </dom-module>
