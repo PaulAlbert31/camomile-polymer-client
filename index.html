@@ -23,11 +23,9 @@
     body {
       background-color:#DCD6D5;
         }
-        #interactivePlayer { z-index:1;position:relative;height:auto;width: auto;display: inline-block;left:-8px}
+        #interactivePlayer { z-index:1;position:relative;height:auto;width: auto;display: inline-block}
         #video { position:absolute;height:auto;width:auto;z-index:1;}
         #interaction { position:absolute;height:auto;width:auto; z-index:3;}
-        #button{-webkit-appearance : button;appearance:button}
-
   </style>
 </head>
 
@@ -38,7 +36,6 @@
 <div>
   <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
   <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
-  <button id='button'>Play</button>
 </div>
 </div>
 <div id = 'vid'>
