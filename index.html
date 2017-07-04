@@ -44,7 +44,9 @@
 </div>
 <script>
 document.ontouchmove = function(event){
+  if(document.getElementById('vid').children[1].children[1].controls==true){
   event.preventDefault();
+}
 }
 </script>
 
