@@ -15,7 +15,7 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video" controls
+    <video id="video"
     width=auto height=auto >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -31,7 +31,6 @@
     var start=[0,0,0];
     var player = document.getElementById('player1').$.video;
     var videoElement = player;
-    console.log(document.getElementById('player1').$);
     var videoHeight = videoElement.clientHeight;
     var videoWidth = videoElement.clientHeight;
     var parent = document.getElementById('vid');
@@ -173,6 +172,9 @@
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');})
+      interaction.addEventListener('touchstart';function(){
+        player.play();
+      })
         </script>
       </template>
 
