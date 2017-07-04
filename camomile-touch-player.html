@@ -20,10 +20,8 @@
     var videoHeight = videoElement.clientHeight;
     var videoWidth = videoElement.clientHeight;
     var parent = document.getElementById('player1');
-    var h=0;
     function _wrap(){
-      document.getElementById('text').innerHTML='page init'+h;
-      h++;
+      document.getElementById('text').innerHTML='page init';
       if(videoElement.parentNode.id==undefined){
 
         var wrapper = document.createElement('div');
@@ -162,7 +160,8 @@
         // arrow.marker('end',arrowHead)
 
       };
-      videoElement.addEventListener('progess', _wrap);
+      videoElement.addEventListener('touchstart', _wrap);
+      videoElement.addEventListener('click', _wrap);
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');})
         </script>
