@@ -81,7 +81,6 @@
           width = videoElement.clientWidth;
           offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight-window.scrollY;
           offsetX=document.getElementById('vid').offsetLeft-window.scrollX;
-          touchLayer.style.zIndex=videoElement.style.zIndex+3;
           if (player.paused&&player.currentTime==0){
             player.play();
           }else{
