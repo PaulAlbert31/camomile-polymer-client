@@ -80,8 +80,9 @@
         hammer.on('singletap', function(event) {
           height = videoElement.clientHeight;
           width = videoElement.clientWidth;
-          offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
-          offsetX=document.getElementById('vid').offsetLeft;
+          offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight-window.scrollY;
+          offsetX=document.getElementById('vid').offsetLeft-window.scrollX;
+          touchLayer.style.zIndex=videoElement.style.zIndex+3;
           videoElement.controls=false;
           if (player.paused&&player.currentTime==0){
             player.play();
@@ -129,9 +130,9 @@
           hammer.on('panstart', function(event) {
             height = videoElement.clientHeight;
             width = videoElement.clientWidth;
-            offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
+            offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight-window.scrollY;
             start=[(event.center.x-offsetX),event.center.y-offsetY,player.currentTime]
-            offsetX=document.getElementById('vid').offsetLeft;
+            offsetX=document.getElementById('vid').offsetLeft-window.scrollX;
             console.log({'type': event.type,
             'x': (event.center.x-offsetX)/width,
             'y': (event.center.y-offsetY)/height,
@@ -140,8 +141,8 @@
           hammer.on('panend', function(event) {
             height = videoElement.clientHeight;
             width = videoElement.clientWidth;
-            offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight;
-            offsetX=document.getElementById('vid').offsetLeft;
+            offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight-window.scrollY;
+            offsetX=document.getElementById('vid').offsetLeft-window.scrollX;
             console.log({'type': event.type,
             'x': (event.center.x-offsetX)/width,
             'y': (event.center.y-offsetY)/height,
@@ -167,7 +168,7 @@
         // });
         //
         // arrow.marker('end',arrowHead)
-        
+
       };
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
