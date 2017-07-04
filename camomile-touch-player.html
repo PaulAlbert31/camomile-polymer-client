@@ -156,6 +156,10 @@
 
         var circle=this.draw.circle(videoHeight/10).fill({color:'#f06',opacity:0});
         var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+        touchLayer.addEventListener('touchstart',function(){
+          player.play
+          console.log('touchLayer');
+        })
         // see "how to maintain the aspect ratio of a div using only CSS
         // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
 
@@ -171,9 +175,6 @@
       videoElement.addEventListener('loadedmetadata', _wrap);
       videoElement.addEventListener('canplay',function(){
         console.log('canplay');})
-      interaction.addEventListener('touchstart',function(){
-        player.play();
-      })
         </script>
       </template>
 
