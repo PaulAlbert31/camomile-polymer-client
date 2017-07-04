@@ -32,34 +32,27 @@
     body {
       background-color:#DCD6D5;
         }
-        #interactivePlayer { z-index:1;position:relative;height:auto;width: auto;display: inline-block;}
-        #video { position:absolute;height:auto;width:auto;z-index:1;display: inline-block;}
-        #interaction { position:absolute;height:auto;width:auto; z-index:500;display: inline-block;}
   </style>
 </head>
 <noscript>
-  Activez javascript de suite !
+  Activez javascript pour acceder à la page !
 </noscript>
 
-<body id ='b'>
-<div id = 'log'>
+<body>
   <camomile-endpoint id="camomile1"></camomile-endpoint>
   <camomile-login id="user1" src-endpoint="camomile1"></camomile-login>
-<div>
+  <br>
   <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
   <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
-</div>
-</div>
-<div id = 'vid'>
+  <br>
   <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
   <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
-</div>
 <script>
-// document.ontouchmove = function(event){
-//   // if(!document.getElementById('vid').children[1].children[1].paused){
-//   event.preventDefault();
-// // }
+document.ontouchmove = function(event){
+  // if(!document.getElementById('vid').children[1].children[1].paused){
+  event.preventDefault();
 // }
+}
 </script>
 
 </body>
