@@ -82,7 +82,6 @@
           offsetY=document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight-window.scrollY;
           offsetX=document.getElementById('vid').offsetLeft-window.scrollX;
           touchLayer.style.zIndex=videoElement.style.zIndex+3;
-          videoElement.controls=false;
           if (player.paused&&player.currentTime==0){
             player.play();
           }else{
@@ -193,7 +192,6 @@
           this.medium_url = mediumView.medium_url;
           this.format = mediumView.format;
           this.$.video.load();
-          document.getElementById('vid').children[1].children[1].controls=true;
           window.scrollTo(document.getElementById('vid').offsetLeft, document.getElementById("log").clientHeight+document.getElementById('vid').clientHeight);
         }
 
