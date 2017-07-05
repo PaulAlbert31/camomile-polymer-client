@@ -10,169 +10,6 @@
     width=auto height=auto >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
-    <script type="text/javascript">
-
-    var lastMove=null;
-    var i=0;
-    var start=[0,0,0];
-    var player = document.getElementById('player1').$.video;
-    var shadow = document.getElementById('player1').$;
-    var videoElement = player;
-    var videoHeight = videoElement.clientHeight;
-    var videoWidth = videoElement.clientHeight;
-    var parent = document.getElementById('player1');
-    var playLayer=document.createElement('div');
-    playLayer.style='border: 5px solid black;display:inline-block;z-index:2';
-    playLayer.id='playLayer';
-    document.body.replaceChild(playLayer,document.getElementById('player1'))
-    playLayer.appendChild(videoElement);
-    playLayer.addEventListener('click',player.play());
-    playLayer.addEventListener('touchstart',player.play());
-    document.getElementById('text').innerHTML='playLayer added'
-    function _wrap(){
-      document.getElementById('text').innerHTML='page init';
-      if(videoElement.parentNode.id=='playLayer'){
-
-        var wrapper = document.createElement('div');
-
-        wrapper.id = 'interactivePlayer';
-        // see "how to maintain the aspect ratio of a div using only CSS
-        // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
-
-
-        // Work in progress
-        // var arrowHead = this.draw.marker(2,2,function(add) {
-        //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
-        // });
-        //
-        // arrow.marker('end',arrowHead)
-        document.body.replaceChild(wrapper,playLayer);
-        // add touch overlay on top of player
-        var touchLayer = document.createElement('div');
-        touchLayer.id = 'interaction';
-        // touchLayer.appendChild(videoElement);
-        wrapper.appendChild(touchLayer);
-        wrapper.appendChild(videoElement);
-        document.getElementById('interactivePlayer').style.cssText='z-index:1;position:relative;height:auto;width: auto;display: inline-block';
-        document.getElementById('interactivePlayer').firstChild.style.cssText='position:absolute;height:auto;width:auto; z-index:500;display: inline-block';
-        document.getElementById('interactivePlayer').lastChild.style.cssText='position:absolute;height:auto;width:auto;z-index:1;display: inline-block';
-        this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
-        // add Hammer to touch overlay
-        var hammer = new Hammer.Manager(touchLayer);
-        // Tap recognizer with minimal 2 taps
-        hammer.add( new Hammer.Tap({ event: 'doubletap', taps: 2, interval:500, posThreshold:50 }) );
-        // Single tap recognizer
-        hammer.add( new Hammer.Tap({ event: 'singletap' }) );
-        // Pan recognizer
-        hammer.add(new Hammer.Pan({event:'pan'}));
-        // Pinch recognizer
-        hammer.add(new Hammer.Pinch({event:'pinch'}))
-
-        // we want to recognize this simulatenous, so a doubletap will be detected even while a tap has been recognized.
-        hammer.get('doubletap').recognizeWith('singletap');
-        // we only want to trigger a tap, when we don't have detected a doubletap
-        hammer.get('singletap').requireFailure('doubletap');
-        // we only want to pinch if taps fail
-        hammer.get('pan').requireFailure('pinch')
-
-        hammer.on('singletap', function(event) {
-          height = videoElement.clientHeight;
-          width = videoElement.clientWidth;
-          rect=player.getBoundingClientRect();
-          event.center.x=(event.center.x-rect.left)/width;
-          event.center.y=(event.center.y-rect.top)/height;;
-          if (player.paused&&player.currentTime==0){
-            player.play();
-          }else{
-            circle.center((event.center.x*width),event.center.y*height);
-            circle.fill({opacity:0.8}).animate(1000).fill({opacity:0});
-            console.log({'type': event,
-            'x': (event.center.x),
-            'y': (event.center.y),
-            'currentTime': player.currentTime});
-          }});
-          hammer.on('doubletap', function() {
-            if (player.paused) {
-              player.play()
-            } else {
-              player.pause()
-            }
-          });
-
-          hammer.on('pinchout', function(event) {
-            if (i==8&&player.playbackRate<1.9) {
-              i=0;
-              player.playbackRate+=0.2;
-              console.log(player.playbackRate)
-              console.log({'type': event.type,
-              'currentTime': player.currentTime,'i':i});
-            } else if(player.playbackRate<1.9){
-              i++;
-            }
-
-          });
-
-          hammer.on('pinchin', function(event) {
-            if (i==8&&player.playbackRate>0.41) {
-              i=0;
-              player.playbackRate-=0.2;
-              console.log(player.playbackRate)
-              console.log({'type': event.type,
-              'currentTime': player.currentTime,'i':i});
-            } else if(player.playbackRate>0.41){
-              i++;
-            }
-          });
-
-          hammer.on('panstart', function(event) {
-            height = videoElement.clientHeight;
-            width = videoElement.clientWidth;
-            rect=player.getBoundingClientRect();
-            event.center.x=(event.center.x-rect.left)/width;
-            event.center.y=(event.center.y-rect.top)/height;;
-            start=[(event.center.x)*width,event.center.y*height,player.currentTime]
-            console.log({'type': event.type,
-            'x': (event.center.x),
-            'y': (event.center.y),
-            'currentTime': player.currentTime});
-          });
-          hammer.on('panend', function(event) {
-            height = videoElement.clientHeight;
-            width = videoElement.clientWidth;
-            rect=player.getBoundingClientRect();
-            event.center.x=(event.center.x-rect.left)/width;
-            event.center.y=(event.center.y-rect.top)/height;;
-            console.log({'type': event.type,
-            'x': (event.center.x),
-            'y': (event.center.y),
-            'currentTime': player.currentTime});
-            if (player.currentTime-start[2]<2) {
-              arrow.animate(500).stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x*width),event.center.y*height).animate(1000).stroke({opacity:0});
-            }
-          });
-        }else{
-          var wrapper=document.getElementById('interactivePlayer');
-          var touchLayer = wrapper.firstChild;
-        }
-
-        var circle=this.draw.circle(videoHeight/10).fill({color:'#f06',opacity:0});
-        var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
-        // see "how to maintain the aspect ratio of a div using only CSS
-        // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
-
-
-        // Work in progress
-        // var arrowHead = this.draw.marker(2,2,function(add) {
-        //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
-        // });
-        //
-        // arrow.marker('end',arrowHead)
-
-      };
-      videoElement.addEventListener('loadedmetadata',function(){
-      console.log(videoElement.readyState);
-      console.log('canplay');_wrap()})
-      </script>
     </template>
 
     <script>
@@ -200,6 +37,152 @@
         this.$.video.load();
       }
 
+      _wrap() {
+
+        var videoElement=this.video;
+        var lastMove=null;
+        var i=0;
+        var start=[0,0,0];
+        document.getElementById('text').innerHTML='page init';
+        if(videoElement.parentNode.id=='playLayer'){
+
+          var wrapper = document.createElement('div');
+
+          wrapper.id = 'interactivePlayer';
+          // see "how to maintain the aspect ratio of a div using only CSS
+          // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
+
+
+          // Work in progress
+          // var arrowHead = this.draw.marker(2,2,function(add) {
+          //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
+          // });
+          //
+          // arrow.marker('end',arrowHead)
+          document.body.replaceChild(wrapper,playLayer);
+          // add touch overlay on top of player
+          var touchLayer = document.createElement('div');
+          touchLayer.id = 'interaction';
+          // touchLayer.appendChild(videoElement);
+          wrapper.appendChild(touchLayer);
+          wrapper.appendChild(videoElement);
+          document.getElementById('interactivePlayer').style.cssText='z-index:1;position:relative;height:auto;width: auto;display: inline-block';
+          document.getElementById('interactivePlayer').firstChild.style.cssText='position:absolute;height:auto;width:auto; z-index:500;display: inline-block';
+          document.getElementById('interactivePlayer').lastChild.style.cssText='position:absolute;height:auto;width:auto;z-index:1;display: inline-block';
+          this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
+          // add Hammer to touch overlay
+          var hammer = new Hammer.Manager(touchLayer);
+          // Tap recognizer with minimal 2 taps
+          hammer.add( new Hammer.Tap({ event: 'doubletap', taps: 2, interval:500, posThreshold:50 }) );
+          // Single tap recognizer
+          hammer.add( new Hammer.Tap({ event: 'singletap' }) );
+          // Pan recognizer
+          hammer.add(new Hammer.Pan({event:'pan'}));
+          // Pinch recognizer
+          hammer.add(new Hammer.Pinch({event:'pinch'}))
+
+          // we want to recognize this simulatenous, so a doubletap will be detected even while a tap has been recognized.
+          hammer.get('doubletap').recognizeWith('singletap');
+          // we only want to trigger a tap, when we don't have detected a doubletap
+          hammer.get('singletap').requireFailure('doubletap');
+          // we only want to pinch if taps fail
+          hammer.get('pan').requireFailure('pinch')
+
+          hammer.on('singletap', function(event) {
+            var height = videoElement.clientHeight;
+            var width = videoElement.clientWidth;
+            var rect=videoElement.getBoundingClientRect();
+            event.center.x=(event.center.x-rect.left)/width;
+            event.center.y=(event.center.y-rect.top)/height;;
+            if (videoElement.paused&&videoElement.currentTime==0){
+              videoElement.play();
+            }else{
+              circle.center((event.center.x*width),event.center.y*height);
+              circle.fill({opacity:0.8}).animate(300).fill({opacity:0});
+              console.log({'type': event,
+              'x': (event.center.x),
+              'y': (event.center.y),
+              'currentTime': videoElement.currentTime});
+            }});
+            hammer.on('doubletap', function() {
+              if (videoElement.paused) {
+                videoElement.play()
+              } else {
+                videoElement.pause()
+              }
+            });
+
+            hammer.on('pinchout', function(event) {
+              if (i==8&&videoElement.playbackRate<1.9) {
+                i=0;
+                videoElement.playbackRate+=0.2;
+                console.log(videoElement.playbackRate)
+                console.log({'type': event.type,
+                'currentTime': videoElement.currentTime,'i':i});
+              } else if(videoElement.playbackRate<1.9){
+                i++;
+              }
+
+            });
+
+            hammer.on('pinchin', function(event) {
+              if (i==8&&videoElement.playbackRate>0.41) {
+                i=0;
+                videoElement.playbackRate-=0.2;
+                console.log(videoElement.playbackRate)
+                console.log({'type': event.type,
+                'currentTime': videoElement.currentTime,'i':i});
+              } else if(videoElement.playbackRate>0.41){
+                i++;
+              }
+            });
+
+            hammer.on('panstart', function(event) {
+              var height = videoElement.clientHeight;
+              var width = videoElement.clientWidth;
+              var rect=videoElement.getBoundingClientRect();
+              event.center.x=(event.center.x-rect.left)/width;
+              event.center.y=(event.center.y-rect.top)/height;;
+              start=[(event.center.x)*width,event.center.y*height,videoElement.currentTime]
+              console.log({'type': event.type,
+              'x': (event.center.x),
+              'y': (event.center.y),
+              'currentTime': videoElement.currentTime});
+            });
+            hammer.on('panend', function(event) {
+              var height = videoElement.clientHeight;
+              var width = videoElement.clientWidth;
+              var rect=videoElement.getBoundingClientRect();
+              event.center.x=(event.center.x-rect.left)/width;
+              event.center.y=(event.center.y-rect.top)/height;;
+              console.log({'type': event.type,
+              'x': (event.center.x),
+              'y': (event.center.y),
+              'currentTime': videoElement.currentTime});
+              if (videoElement.currentTime-start[2]<2) {
+                arrow.stroke({opacity:0.8}).plot(start[0],start[1],(event.center.x*width),event.center.y*height).animate(300).stroke({opacity:0});
+              }
+            });
+          }else{
+            var wrapper=document.getElementById('interactivePlayer');
+            var touchLayer = wrapper.firstChild;
+          }
+
+          var circle=this.draw.circle(videoElement.clientHeight/20).fill({color:'#f06',opacity:0});
+          var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+          // see "how to maintain the aspect ratio of a div using only CSS
+          // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
+
+
+          // Work in progress
+          // var arrowHead = this.draw.marker(2,2,function(add) {
+          //   var rectangle=add.rect(videoHeight/25,videoHeight/25).fill({color:'#f06',opacity:0});
+          // });
+          //
+          // arrow.marker('end',arrowHead)
+
+        };
+
       ready() {
 
         super.ready();
@@ -207,6 +190,22 @@
         let syncAll;
         let syncPlaying;
         this.video=this.$.video;
+        var player = this.$.video;
+        var shadow = this.$;
+        var videoElement = player;
+        var playLayer=document.createElement('div');
+        playLayer.style='border: 5px solid black;display:inline-block;z-index:2';
+        playLayer.id='playLayer';
+        document.body.replaceChild(playLayer,this)
+        playLayer.appendChild(videoElement);
+        playLayer.addEventListener('click',player.play());
+        playLayer.addEventListener('touchstart',player.play());
+
+        document.getElementById('text').innerHTML='playLayer added';
+        var sync=this;
+        videoElement.addEventListener('loadedmetadata',function(){
+        console.log('canplay');sync._wrap();})
+
 
 
         if(this.syncAll) {
