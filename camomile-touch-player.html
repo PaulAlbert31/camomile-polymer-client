@@ -44,7 +44,7 @@
         var i=0;
         var start=[0,0,0];
         document.getElementById('text').innerHTML='page init';
-        if(videoElement.parentNode.id=='playLayer'){
+        if(videoElement.parentNode.id==undefined){
 
           var wrapper = document.createElement('div');
 
@@ -59,7 +59,7 @@
           // });
           //
           // arrow.marker('end',arrowHead)
-          document.body.replaceChild(wrapper,playLayer);
+          document.body.replaceChild(wrapper,document.getElementById('player1'));
           // add touch overlay on top of player
           var touchLayer = document.createElement('div');
           touchLayer.id = 'interaction';
@@ -193,15 +193,6 @@
         var player = this.$.video;
         var shadow = this.$;
         var videoElement = player;
-        var playLayer=document.createElement('div');
-        playLayer.style='border: 5px solid black;display:inline-block;z-index:2';
-        playLayer.id='playLayer';
-        document.body.replaceChild(playLayer,this)
-        playLayer.appendChild(videoElement);
-        playLayer.addEventListener('click',player.play());
-        playLayer.addEventListener('touchstart',player.play());
-
-        document.getElementById('text').innerHTML='playLayer added';
         var sync=this;
         videoElement.addEventListener('loadedmetadata',function(){
         console.log('canplay');sync._wrap();})
