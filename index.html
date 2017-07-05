@@ -11,6 +11,9 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="translucent-black">
   <meta name="apple-mobile-web-app-title" content="My App">
   <meta name="format-detection" content="telephone=no" />
+  <link rel='stylesheet' type="text/css" href="./node_modules/materialize-css/dist/css/materialize.css">
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
   <title>Camomile client polymer</title>
   <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
   <link rel="import" href="camomile-endpoint.html">
@@ -29,9 +32,9 @@
   <link rel="import" href="camomile-medium-view.html">
   <link rel="import" href="camomile-layer-state.html">
   <style>
-    body {
-      background-color:#DCD6D5;
-        }
+  body {
+    background-color:#DCD6D5;
+  }
   </style>
 </head>
 <noscript>
@@ -39,22 +42,35 @@
 </noscript>
 
 <body>
-  <camomile-endpoint id="camomile1"></camomile-endpoint>
-  <camomile-login id="user1" src-endpoint="camomile1"></camomile-login>
-  <div id='text'>debug</div>
+  <nav class="nav-extended">
+    <div class="nav-wrapper">
+      <a class='brand-logo center'>Camomile Touch Player</a>
+    </div>
+    <div class ='nav-content'>
+      <ul class="tabs tabs-transparent">
+        <li class="tab"><a href="#test1">EndPoint</a></li>
+        <li class="tab "><a href="#test2">Login</a></li>
+        <li class="tab "><a class="active" href="#test3">Corpus et Media</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div id="test1" class="col s12"><camomile-endpoint class='center' id="camomile1"></camomile-endpoint></div>
+  <div id="test2" class="col s12"><camomile-login class='center' id="user1" src-endpoint="camomile1"></camomile-login></div>
+  <div id="test3" class="col s12"><camomile-corpus-select class='center' id="corpus1" src-login="user1"></camomile-corpus-select>
+                                  <camomile-medium-select class='center' id="medium1" src-corpus="corpus1"></camomile-medium-select>
+  </div>
   <br>
-  <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
-  <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
-  <br>
-  <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
-  <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
-<script>
-document.ontouchmove = function(event){
-  // if(!document.getElementById('vid').children[1].children[1].paused){
-  event.preventDefault();
-// }
-}
-</script>
+    <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
+    <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
+
+  <script type='text/javascript'>
+  document.ontouchmove = function(event){
+    event.preventDefault();
+  }
+  $(document).ready(function() {
+    $('select').material_select();
+  });
+  </script>
 
 </body>
 </html>

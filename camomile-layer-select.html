@@ -1,15 +1,16 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="materialize.html">
 <script src="cookie.js"></script>
 <script src="getElementAt.js"></script>
 
 <dom-module id="camomile-layer-select">
 
   <template>
+  <style include='materialize'></style>
   <style>
   :host {
     z-index:50;
-    position: relative;
   }
   </style>
     <paper-dropdown-menu-light label="Layer" id="layer">
