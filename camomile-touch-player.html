@@ -6,7 +6,7 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video" autoplay
+    <video id="video"
     width=auto height=auto >
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -16,13 +16,21 @@
     var i=0;
     var start=[0,0,0];
     var player = document.getElementById('player1').$.video;
+    var shadow = document.getElementById('player1').$;
     var videoElement = player;
     var videoHeight = videoElement.clientHeight;
     var videoWidth = videoElement.clientHeight;
     var parent = document.getElementById('player1');
+    var playLayer=document.createElement('div');
+    playLayer.style='border: 5px solid black;display:inline-block;z-index:2';
+    playLayer.id='playLayer';
+    document.body.replaceChild(playLayer,document.getElementById('player1'))
+    playLayer.appendChild(videoElement);
+    playLayer.addEventListener('click',player.play());
+    playLayer.addEventListener('touchstart',player.play());
     function _wrap(){
       document.getElementById('text').innerHTML='page init';
-      if(videoElement.parentNode.id==undefined){
+      if(videoElement.parentNode.id=='playLayer'){
 
         var wrapper = document.createElement('div');
 
@@ -37,7 +45,7 @@
         // });
         //
         // arrow.marker('end',arrowHead)
-        document.body.replaceChild(wrapper,document.getElementById('player1'));
+        document.body.replaceChild(wrapper,playLayer);
         // add touch overlay on top of player
         var touchLayer = document.createElement('div');
         touchLayer.id = 'interaction';
@@ -160,109 +168,124 @@
         // arrow.marker('end',arrowHead)
 
       };
-        videoElement.addEventListener('durationchange',function(){
-        console.log('canplay');_wrap()})
-        </script>
-      </template>
+      videoElement.addEventListener('loadedmetadata',function(){
+      console.log(videoElement.readyState);
+      console.log('canplay');_wrap()})
+      </script>
+    </template>
 
-      <script>
-      class CamomilePlayer extends Polymer.Element {
-        static get is() {
-          return "camomile-touch-player";
-        }
+    <script>
+    class CamomilePlayer extends Polymer.Element {
+      static get is() {
+        return "camomile-touch-player";
+      }
 
-        constructor() {
-          super();
-        }
+      constructor() {
+        super();
+      }
 
-        _setupMediumView(mediumView) {
-          console.log("setting player",this.id,"to",mediumView.medium_url);
-          this.medium_url = mediumView.medium_url;
-          this.format = mediumView.format;
-          this.$.video.load();
-        }
-
-
-        _resetMediumView() {
-          console.log("reset player",this.id);
-          this.medium_url="";
-          this.format="";
-          this.$.video.load();
-        }
-
-        ready() {
-
-          super.ready();
-          let syncCurrentTime;
-          let syncAll;
-          let syncPlaying;
-          this.video=this.$.video;
+      _setupMediumView(mediumView) {
+        console.log("setting player",this.id,"to",mediumView.medium_url);
+        this.medium_url = mediumView.medium_url;
+        this.format = mediumView.format;
+        this.$.video.load();
+      }
 
 
-          if(this.syncAll) {
-            syncAll = getElementAt(this.syncAll);
+      _resetMediumView() {
+        console.log("reset player",this.id);
+        this.medium_url="";
+        this.format="";
+        this.$.video.load();
+      }
 
-            if(syncAll.medium) {
-              this._setupMediumView(syncAll);
-            }
+      ready() {
 
-            syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
-            syncAll.addEventListener("reset", () => this._resetMediumView());
-            syncCurrentTime=syncAll;
-            syncPlaying=syncAll;
+        super.ready();
+        let syncCurrentTime;
+        let syncAll;
+        let syncPlaying;
+        this.video=this.$.video;
+
+
+        if(this.syncAll) {
+          syncAll = getElementAt(this.syncAll);
+
+          if(syncAll.medium) {
+            this._setupMediumView(syncAll);
           }
 
-          if(this.syncCurrentTime) {
-            syncCurrentTime = getElementAt(this.syncCurrentTime);
+          syncAll.addEventListener("ready", () => this._setupMediumView(syncAll));
+          syncAll.addEventListener("reset", () => this._resetMediumView());
+          syncCurrentTime=syncAll;
+          syncPlaying=syncAll;
+        }
 
-            if(syncCurrentTime.medium) {
-              this._setupMediumView(syncCurrentTime)
-            }
-            syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
-            syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
+        if(this.syncCurrentTime) {
+          syncCurrentTime = getElementAt(this.syncCurrentTime);
+
+          if(syncCurrentTime.medium) {
+            this._setupMediumView(syncCurrentTime)
           }
+          syncCurrentTime.addEventListener("ready", () => this._setupMediumView(syncCurrentTime));
+          syncCurrentTime.addEventListener("reset", () => this._resetMediumView());
+        }
 
-          if(this.syncPlaying) {
-            syncPlaying = getElementAt(this.syncPlaying);
+        if(this.syncPlaying) {
+          syncPlaying = getElementAt(this.syncPlaying);
 
-            if(syncPlaying.medium) {
-              this._setupMediumView(syncPlaying)
-            }
-            syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
-            syncPlaying.addEventListener("reset", () => this._resetMediumView());
+          if(syncPlaying.medium) {
+            this._setupMediumView(syncPlaying)
           }
+          syncPlaying.addEventListener("ready", () => this._setupMediumView(syncPlaying));
+          syncPlaying.addEventListener("reset", () => this._resetMediumView());
+        }
 
-          if(syncCurrentTime) {
+        if(syncCurrentTime) {
+          const setup=() => {
             this.video.addEventListener("timeupdate",() => {
               syncCurrentTime.publish(this.id,"currentTime",this.video.currentTime);
             });
+
             syncCurrentTime.subscribe(this.id,"currentTime",() => {
               this.video.currentTime=syncCurrentTime.currentTime;
             });
+          };
+
+          if(syncCurrentTime.medium) {
+            setup();
           }
+          syncCurrentTime.addEventListener("ready", () => setup());
+        }
 
 
-          if(syncPlaying) {
+        if(syncPlaying) {
+          const setup = () => {
             this.video.addEventListener("play", () => {
-              syncPlaying.publish(this.id,"playing",true);
+              syncPlaying.publish(this.id, "playing", true);
             });
             this.video.addEventListener("pause", () => {
-              syncPlaying.publish(this.id,"playing",false);
+              syncPlaying.publish(this.id, "playing", false);
             });
+          };
+          if(syncPlaying.medium) {
+            setup();
           }
-        }
-
-
-        static get properties() {
-          return {
-            syncCurrentTime: String,
-            syncPlaying: String,
-            syncAll: String,
-            id: String
-          }
+          syncPlaying.addEventListener("ready", () => setup());
         }
       }
-      customElements.define(CamomilePlayer.is, CamomilePlayer);
-      </script>
 
-    </dom-module>
+
+      static get properties() {
+        return {
+          syncCurrentTime: String,
+          syncPlaying: String,
+          syncAll: String,
+          id: String
+        }
+      }
+    }
+    customElements.define(CamomilePlayer.is, CamomilePlayer);
+    </script>
+
+  </dom-module>
