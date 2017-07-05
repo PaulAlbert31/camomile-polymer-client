@@ -1,27 +1,37 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="materialize.html">
 <script src="cookie.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
 
 <dom-module id="camomile-endpoint">
   <template>
+    <style include='materialize'></style>
     <style>
       :host {
         display:inline-block;
         z-index:50;
-        position: relative;
       }
     </style>
       <template is="dom-if" if="{{!endPointSet}}">
-        <paper-input style="--paper-input-container-color: white; --paper-input-container-input-color: white; display:inline-block" label="Endpoint" type="text" id="endpoint" required></paper-input>
-        <paper-button raised class="indigo" on-click="setEndPoint">Set endpoint</paper-button>
+        <div class='row'>
+        <div class='col s12'>
+        <input placeholder="https://" label="Endpoint" type="text" id="endpoint" class= 'validate' required>
+        <a class="btn waves-effect waves-light" on-click="setEndPoint">Set endpoint</a>
+      </div>
+      </div>
       </template>
       <template is="dom-if" if="{{endPointSet}}">
+        <div class='row'>
+        <div class='col s12'>
+        <p class='flow-text'>
         {{url}}
-        <paper-button raised class="indigo" on-click="resetEndPoint">Reset endpoint</paper-button>
+        <a class="btn waves-effect waves-light" on-click="resetEndPoint">Reset endpoint</a>
+      </p>
+    </div>
+    </div>
       </template>
   </template>
-
   <script>
     class CamomileEndpoint extends Polymer.Element {
       static get is() {
@@ -73,5 +83,9 @@
     }
     customElements.define(CamomileEndpoint.is, CamomileEndpoint);
   </script>
-
+  <script>
+  $(document).ready(function() {
+      $('select').material_select();
+  });
+  </script>
 </dom-module>

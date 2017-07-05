@@ -2,12 +2,16 @@
 <script src="getElementAt.js"></script>
 <script src="node_modules/hammerjs/hammer.min.js"></script>
 <script src="node_modules/svgjs/dist/svg.min.js"></script>
+<link rel="import" href="materialize.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
 
 <dom-module id="camomile-touch-player">
 
   <template>
-    <video id="video"
-    width=auto height=auto >
+  <style include='materialize'></style>
+    <video id="video" width=100%>
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
     </template>
@@ -43,12 +47,12 @@
         var lastMove=null;
         var i=0;
         var start=[0,0,0];
-        document.getElementById('text').innerHTML='page init';
         if(videoElement.parentNode.id==undefined){
 
           var wrapper = document.createElement('div');
 
           wrapper.id = 'interactivePlayer';
+          wrapper.class='col s12';
           // see "how to maintain the aspect ratio of a div using only CSS
           // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
 
@@ -59,16 +63,17 @@
           // });
           //
           // arrow.marker('end',arrowHead)
-          document.body.replaceChild(wrapper,document.getElementById('player1'));
+          document.getElementById('player1').parentNode.replaceChild(wrapper,document.getElementById('player1'));
           // add touch overlay on top of player
           var touchLayer = document.createElement('div');
           touchLayer.id = 'interaction';
           // touchLayer.appendChild(videoElement);
           wrapper.appendChild(touchLayer);
           wrapper.appendChild(videoElement);
-          document.getElementById('interactivePlayer').style.cssText='z-index:1;position:relative;height:auto;width: auto;display: inline-block';
-          document.getElementById('interactivePlayer').firstChild.style.cssText='position:absolute;height:auto;width:auto; z-index:500;display: inline-block';
-          document.getElementById('interactivePlayer').lastChild.style.cssText='position:absolute;height:auto;width:auto;z-index:1;display: inline-block';
+          console.log(wrapper);
+          document.getElementById('interactivePlayer').style.cssText='padding-bottom:42%;z-index:1;position:relative;height:100%;width: 100%;display: inline-block';
+          document.getElementById('interactivePlayer').firstChild.style.cssText='position:absolute;height:100%;width:100%; z-index:500;display: inline-block';
+          document.getElementById('interactivePlayer').lastChild.style.cssText='position:absolute;height:100%;width:100%;z-index:1;display: inline-block';
           this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
           // add Hammer to touch overlay
           var hammer = new Hammer.Manager(touchLayer);
@@ -107,6 +112,7 @@
             hammer.on('doubletap', function() {
               if (videoElement.paused) {
                 videoElement.play()
+                videoElement.playbackRate=1;
               } else {
                 videoElement.pause()
               }

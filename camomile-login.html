@@ -1,28 +1,36 @@
 <script src="node_modules/camomile-client/camomile.js"></script>
-
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
-<link rel="import" href="bower_components/paper-button/paper-button.html">
-<link rel="import" href="bower_components/paper-input/paper-input.html">
+<link rel="import" href="materialize.html">
 <script src="getElementAt.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
 
 <dom-module id="camomile-login">
   <template>
-    <style is="custom-style">
+    <style include='materialize'></style>
+    <style>
       :host {
-        display: inline-block;
         z-index:50;
-        position: relative;
       }
     </style>
     <template is="dom-if" if="{{!logged_in}}">
-      <paper-input style="--paper-input-container-color: white; --paper-input-container-input-color: white; display:inline-block" label="User" type="text" id="user" required></paper-input>
-      <paper-input style="--paper-input-container-color: white; --paper-input-container-input-color: white; display:inline-block" label="Password" type="password" id="password" required></paper-input>
-      <paper-button raised class="indigo" on-click="login">Login</paper-button>
+      <div class='row'>
+      <div class='col s12'>
+      <input placeholder="User" class= 'validate' label="User" type="text" id="user" required>
+      <input placeholder="Password" class= 'validate' label="Password" type="password" id="password" required>
+      <a class="waves-effect waves-light btn" on-click="login">Login</a>
+    </div>
+    </div>
     </template>
     <template is="dom-if" if="{{logged_in}}">
-      {{username}}
-      <paper-button raised class="indigo" on-click="logout">Logout</paper-button>
+      <div class='row'>
+      <div class='col s12'>
+      <p class='flow-text'>{{username}}
+      <a class="btn waves-effect waves-light" on-click="logout">Logout</a>
+    </p>
+  </div>
+  </div>
     </template>
     {{login_status}}
   </template>
@@ -100,6 +108,9 @@
       }
     }
     customElements.define(CamomileLogin.is, CamomileLogin);
+    $(document).ready(function() {
+        $('select').material_select();
+    });
   </script>
 
 </dom-module>
