@@ -160,10 +160,8 @@
         // arrow.marker('end',arrowHead)
 
       };
-
-        videoElement.addEventListener('canplay',function(){
-        console.log('canplay');
-        _wrap()})
+        videoElement.addEventListener('durationchange',function(){
+        console.log('canplay');_wrap()})
         </script>
       </template>
 
