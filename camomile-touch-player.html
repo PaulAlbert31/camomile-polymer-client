@@ -189,6 +189,13 @@
         this.medium_url = mediumView.medium_url;
         this.format = mediumView.format;
         this.$.video.load();
+        var playLayer=document.createElement('div');
+        playLayer.style='border: 5px solid black;display:inline-block;z-index:2';
+        playLayer.id='playLayer';
+        document.body.replaceChild(playLayer,document.getElementById('player1'))
+        playLayer.appendChild(this.$.video);
+        playLayer.addEventListener('click',this.$.video.play());
+        playLayer.addEventListener('touchstart',this.$.play());
       }
 
 
