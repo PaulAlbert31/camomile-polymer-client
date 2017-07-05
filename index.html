@@ -44,18 +44,18 @@
 <body>
   <nav class="nav-extended">
     <div class="nav-wrapper">
-      <a class='brand-logo center'>Camomile Touch Player</a>
+      <a class='brand-logo left'>Camomile Touch Player</a>
+    <div class='row'>
+      <div class='col3 right'>
+        <camomile-login class='center' id="user1" src-endpoint="camomile1"></camomile-login>
+      </div>
+      <div class='col3 right'>
+        <camomile-endpoint class='center' id="camomile1"></camomile-endpoint>
+      </div>
     </div>
-    <div class ='nav-content'>
-      <ul class="tabs tabs-transparent">
-        <li class="tab"><a href="#test1">EndPoint</a></li>
-        <li class="tab "><a href="#test2">Login</a></li>
-        <li class="tab "><a class="active" href="#test3">Corpus et Media</a></li>
-      </ul>
+    </div>
     </div>
   </nav>
-  <div id="test1" class="col s12"><camomile-endpoint class='center' id="camomile1"></camomile-endpoint></div>
-  <div id="test2" class="col s12"><camomile-login class='center' id="user1" src-endpoint="camomile1"></camomile-login></div>
   <div id="test3" class="col s12"><camomile-corpus-select class='center' id="corpus1" src-login="user1"></camomile-corpus-select>
                                   <camomile-medium-select class='center' id="medium1" src-corpus="corpus1"></camomile-medium-select>
   </div>
