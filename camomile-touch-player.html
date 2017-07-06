@@ -71,7 +71,8 @@
           wrapper.appendChild(touchLayer);
           wrapper.appendChild(videoElement);
           console.log(wrapper);
-          document.getElementById('interactivePlayer').style.cssText='padding-bottom:42%;z-index:1;position:relative;height:100%;width: 100%;display: inline-block';
+          document.getElementById('interactivePlayer').style.cssText='z-index:1;position:relative;height:100%;width: 100%;display: inline-block';
+          document.getElementById('interactivePlayer').style.paddingBottom=100*videoElement.videoHeight/videoElement.videoWidth+'%';
           document.getElementById('interactivePlayer').firstChild.style.cssText='position:absolute;height:100%;width:100%; z-index:500;display: inline-block';
           document.getElementById('interactivePlayer').lastChild.style.cssText='position:absolute;height:100%;width:100%;z-index:1;display: inline-block';
           this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
@@ -102,6 +103,7 @@
             if (videoElement.paused&&videoElement.currentTime==0){
               videoElement.play();
             }else{
+              circle2.center(rect.top,rect.right);
               circle.center((event.center.x*width),event.center.y*height);
               circle.fill({opacity:0.8}).animate(300).fill({opacity:0});
               console.log({'type': event,
@@ -176,6 +178,7 @@
 
           var circle=this.draw.circle(videoElement.clientHeight/20).fill({color:'#f06',opacity:0});
           var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+          var circle2=this.draw.circle(videoElement.clientHeight/20).fill({color:'#f06',opacity:1});
           // see "how to maintain the aspect ratio of a div using only CSS
           // http://stackoverflow.com/questions/1495407/how-to-maintain-the-aspect-ratio-of-a-div-using-only-css
 
