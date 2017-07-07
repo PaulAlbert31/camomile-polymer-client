@@ -1,100 +1,87 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
-<link rel="import" href="bower_components/paper-dropdown-menu/paper-dropdown-menu-light.html">
-<link rel="import" href="bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="bower_components/paper-item/paper-item.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<link rel="import" href="materialize.html">
 <script src="cookie.js"></script>
 <script src="getElementAt.js"></script>
 
 <dom-module id="camomile-corpus-select">
-
   <template>
-    <style>
-    :host {
-      z-index:50;
-      position: relative;
-    }
-    </style>
-
-    <paper-dropdown-menu-light label="Corpus" id="corpus">
-      <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{corpus}}" attr-for-selected="id">
-        <template is="dom-repeat" items="{{corpora}}">
-          <paper-item id="{{item._id}}">{{item.name}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu-light>
+  <style include='materialize'></style>
+  <form   on-submit='select' name='formcorpus'>
+    <label>Corpus</label>
+          <select id='corpus' class='browser-default'  onchange="this.form.sub.click()">
+            <template is="dom-repeat" items="{{corpora}}">
+              <option value="{{item._id}}">{{item.name}}</option>
+            </template>
+          </select>
+          <input type="submit" value="select" name='sub' style='visibility:hidden'/>
+  </form>
   </template>
 
   <script>
-    class CamomileCorpusSelect extends Polymer.Element {
-      static get is() {
-        return "camomile-corpus-select";
-      }
-
-      constructor() {
-        super();
-      }
-
-      _setupCorpora(loginInstance) {
-        this.client = loginInstance.client;
-        this.client.getCorpora()
-          .then(data => {
-            console.log("corpora",data);
-            this.corpora = data;
-
-            setTimeout(() => {
-              const v=getCookie("corpus");
-              if(v!=="") {
-                this.corpus=v;
-              }
-            },0);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-      }
-
-      _resetCorpora() {
-        this.client=null;
-        this.corpora=[];
-        this.corpus=null;
-
-        setCookie("corpus","",0);
-        this.dispatchEvent(new CustomEvent('deselect', {}));
-      }
-
-      ready() {
-        super.ready();
-        const loginInstance = getElementAt(this.srcLogin);
-
-        if(loginInstance.logged_in)
-          this._setupCorpora(loginInstance);
-        loginInstance.addEventListener("login",() => this._setupCorpora(loginInstance));
-        loginInstance.addEventListener("logout", () => this._resetCorpora());
-      }
-
-      selectCorpus(corpus) {
-        console.log("corpus", corpus);
-        return this.dispatchEvent(new CustomEvent('select', {}));
-      }
-
-      _corpusChanged() {
-        setCookie("corpus",this.corpus,10);
-        this.selectCorpus(this.corpus);
-      }
-
-      static get properties() {
-        return {
-          srcLogin: String,
-          id: String,
-          corpus:{
-            type: String,
-            observer:'_corpusChanged'
-          }
-        };
-      }
+  class CamomileCorpusSelect extends Polymer.Element {
+    static get is() {
+      return "camomile-corpus-select";
     }
-    customElements.define(CamomileCorpusSelect.is, CamomileCorpusSelect);
+    constructor() {
+      super();;
+    }
+    _setupCorpora(loginInstance) {
+      this.client = loginInstance.client;
+      this.client.getCorpora()
+      .then(data => {
+        console.log("corpora",data);
+        this.corpora = data;
+        setTimeout(() => {
+          const v=getCookie("corpus");
+          if(v!=="") {
+            this.corpus=v;
+            this.$.corpus.value=v;
+            return this.selectCorpus(v);
+          }
+        },0);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+    }
+    _resetCorpora() {
+      this.client=null;
+      this.corpora=[];
+      this.corpus=null;
+      setCookie("corpus","",0);
+      this.dispatchEvent(new CustomEvent('deselect', {}));
+    }
+    ready() {
+      super.ready();
+      const loginInstance = getElementAt(this.srcLogin);
+      if(loginInstance.logged_in)
+      this._setupCorpora(loginInstance);
+      loginInstance.addEventListener("login",() => this._setupCorpora(loginInstance));
+      loginInstance.addEventListener("logout", () => this._resetCorpora());}
+
+    select(e) {
+      e.preventDefault();
+      console.log('submited');
+      setCookie("corpus",this.$.corpus.value,10);
+      this.selectCorpus(this.$.corpus.value);
+    }
+    selectCorpus(corpus) {
+      console.log("corpus", corpus);
+      this.corpus=corpus;
+      return this.dispatchEvent(new CustomEvent('select', {}));
+    }
+    static get properties() {
+      return {
+        srcLogin: String,
+        id: String,
+      };
+    }
+  }
+  customElements.define(CamomileCorpusSelect.is, CamomileCorpusSelect);
+  $('select').material_select();
   </script>
 
 </dom-module>
