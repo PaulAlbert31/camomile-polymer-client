@@ -25,6 +25,6 @@
     "svgjs": "^2.6.2",
     "video.js": "^6.2.0",
     "vis": "^4.20.0",
-    "wavesurfer.js": "^1.4.0",
+    "wavesurfer.js": "^1.4.0"
   }
 }
