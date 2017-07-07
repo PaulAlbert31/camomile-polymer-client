@@ -14,22 +14,13 @@
       }
     </style>
       <template is="dom-if" if="{{!endPointSet}}">
-        <div class='row'>
-        <div class='col s12'>
-        <input placeholder="https://" label="Endpoint" type="text" id="endpoint" class= 'validate' required>
+
+      <input placeholder="https://" label="Endpoint" type="text" id="endpoint" class= 'validate' required>
         <a class="btn waves-effect waves-light" on-click="setEndPoint">Set endpoint</a>
-      </div>
-      </div>
       </template>
       <template is="dom-if" if="{{endPointSet}}">
-        <div class='row'>
-        <div class='col s12'>
-        <p class='flow-text'>
         {{url}}
         <a class="btn waves-effect waves-light" on-click="resetEndPoint">Reset endpoint</a>
-      </p>
-    </div>
-    </div>
       </template>
   </template>
   <script>

@@ -15,20 +15,13 @@
       }
     </style>
     <template is="dom-if" if="{{!logged_in}}">
-      <div class='col s3 right'>
-      <input placeholder="User" class= 'validate' label="User" type="text" id="user" required>
+    <input placeholder="User" class= 'validate' label="User" type="text" id="user" required>
       <input placeholder="Password" class= 'validate' label="Password" type="password" id="password" required>
       <a class="waves-effect waves-light btn" on-click="login">Login</a>
-    </div>
     </template>
     <template is="dom-if" if="{{logged_in}}">
-      <div class='row'>
-      <div class='col s12'>
-      <p class='flow-text'>{{username}}
+      {{username}}
       <a class="btn waves-effect waves-light" on-click="logout">Logout</a>
-    </p>
-  </div>
-  </div>
     </template>
     {{login_status}}
   </template>
