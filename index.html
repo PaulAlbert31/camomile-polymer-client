@@ -41,17 +41,20 @@
   <nav>
     <div class="nav-wrapper">
       <a href='#!' class='brand-logo'>Camomile Touch Player</a>
-      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul id="dropdown1" class="right hide-on-med-and-down">
-        <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
-        <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+      <a href="#" id ='but2' data-activates="mobile-demo" class="button-collapse" onclick="document.getElementById('mobile-demo').appendChild(document.getElementById('camomile1'));document.getElementById('mobile-demo').appendChild(document.getElementById('user1'))"><i class="material-icons">menu</i></a>
+      <ul class="side-nav teal lighten-2" id="mobile-demo">
+        <script></script>
       </ul>
-      <ul class="side-nav teal lighten-2" id="mobile-demo" style='background-color:'>
-        <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
-        <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+      <ul class="right hide-on-med-and-down" id='full-view'>
+        <a class='btn' onclick="if(this.parentNode.children[2]){document.getElementById('mobile-demo').appendChild(document.getElementById('camomile1'));document.getElementById('mobile-demo').appendChild(document.getElementById('user1'))}else{document.getElementById('full-view').appendChild(document.getElementById('camomile1'));document.getElementById('full-view').appendChild(document.getElementById('user1'));}"><i class="material-icons right">label</i></a>
       </ul>
-    </div>
+      </div>
   </nav>
+  <div style='visibility:hidden'>
+    <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
+    <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+  </div>
+
   <div class='container row'>
     <div class='col s6'>
       <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
