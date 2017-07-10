@@ -33,9 +33,8 @@ class CamomileMediumSelect extends Polymer.Element {
   }
   ready() {
     super.ready();
-    // const corpusInstance = getElementAt(this.srcCorpus);
-    const corpusInstance = document.getElementById(this.srcCorpus);
-
+    const corpusInstance = getElementAt(this.srcCorpus);
+    console.log(corpusInstance.corpus);
     if(corpusInstance.corpus)
     this._setupCorpus(corpusInstance);
     corpusInstance.addEventListener("select", () => this._setupCorpus(corpusInstance));
@@ -54,8 +53,8 @@ class CamomileMediumSelect extends Polymer.Element {
         const v=getCookie("medium");
         if(v!=="") {
           this.medium=v;
-          // this.$.medium.value=v;
-          // return this.selectMedium(v)
+          this.$.medium.value=v;
+          return this.selectMedium(v)
         }
       },0);
     });

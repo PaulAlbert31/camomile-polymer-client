@@ -13,13 +13,23 @@
     z-index:50;
   }
   </style>
-    <paper-dropdown-menu-light label="Layer" id="layer">
+    <!-- <paper-dropdown-menu-light label="Layer" id="layer">
       <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{layer}}" attr-for-selected="id">
         <template is="dom-repeat" items="{{layers}}">
           <paper-item id="{{item._id}}">{{item.name}}</paper-item>
         </template>
       </paper-listbox>
-    </paper-dropdown-menu-light>
+    </paper-dropdown-menu-light> -->
+    <form   on-submit='select'>
+      <label>Layer</label>
+            <select id='layer' class='browser-default'  onchange="this.form.sub.click()">
+              <option value="" disabled selected>Choose your layer</option>
+              <template is="dom-repeat" items="{{layers}}">
+                <option value="{{item._id}}">{{item.name}}</option>
+              </template>
+            </select>
+            <input type="submit" value="select" name='sub' style='visibility:hidden'/>
+    </form>
   </template>
 
   <script>
@@ -90,6 +100,11 @@
             console.log(err);
           });
       }
+      select(e) {
+         e.preventDefault();
+         setCookie("layer",this.$.layer.value,10);
+         this.selectLayer(this.$.layer.value);
+       }
 
       selectLayer(layer) {
         console.log("layer", layer);

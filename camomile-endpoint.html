@@ -14,9 +14,10 @@
       }
     </style>
       <template is="dom-if" if="{{!endPointSet}}">
-
+        <div class='col s3'>
       <input placeholder="https://" label="Endpoint" type="text" id="endpoint" class= 'validate' required>
         <a class="btn waves-effect waves-light" on-click="setEndPoint">Set endpoint</a>
+      </div>
       </template>
       <template is="dom-if" if="{{endPointSet}}">
         {{url}}

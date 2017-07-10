@@ -12,6 +12,7 @@
   <form   on-submit='select' name='formcorpus'>
     <label>Corpus</label>
           <select id='corpus' class='browser-default'  onchange="this.form.sub.click()">
+            <option value="" disabled selected>Choose your corpus</option>
             <template is="dom-repeat" items="{{corpora}}">
               <option value="{{item._id}}">{{item.name}}</option>
             </template>
@@ -64,7 +65,6 @@
 
     select(e) {
       e.preventDefault();
-      console.log('submited');
       setCookie("corpus",this.$.corpus.value,10);
       this.selectCorpus(this.$.corpus.value);
     }

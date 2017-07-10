@@ -41,46 +41,48 @@
   <nav>
     <div class="nav-wrapper">
       <a href='#!' class='brand-logo'>Camomile Touch Player</a>
-      <a href="#" id ='but2' data-activates="mobile-demo" class="button-collapse" onclick="document.getElementById('mobile-demo').appendChild(document.getElementById('camomile1'));document.getElementById('mobile-demo').appendChild(document.getElementById('user1'))"><i class="material-icons">menu</i></a>
-      <ul class="side-nav teal lighten-2" id="mobile-demo">
-        <script></script>
-      </ul>
-      <ul class="right hide-on-med-and-down" id='full-view'>
-        <a class='btn' onclick="if(this.parentNode.children[2]){document.getElementById('mobile-demo').appendChild(document.getElementById('camomile1'));document.getElementById('mobile-demo').appendChild(document.getElementById('user1'))}else{document.getElementById('full-view').appendChild(document.getElementById('camomile1'));document.getElementById('full-view').appendChild(document.getElementById('user1'));}"><i class="material-icons right">label</i></a>
-      </ul>
-      </div>
+    </div>
   </nav>
-  <div style='visibility:hidden'>
-    <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
-    <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+
+      <div class='row'>
+        <div class='col s9'>
+        <div class='row'>
+          <div class='col s6'>
+            <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
+          </div>
+          <div class='col s6'>
+            <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
+          </div>
+          <div class='col s12'>
+            <camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select>
+          </div>
+        </div>
+      </div>
+        <div class='col s3'>
+          <ul>
+            <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
+            <br>
+            <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+      </ul>
+    </div>
+
+    <div class="row">
+      <div class="col s12">
+        <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
+        <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
+      </div>
+    </div>
   </div>
 
-  <div class='container row'>
-    <div class='col s6'>
-      <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
-    </div>
-    <div class='col s6'>
-      <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
-    </div>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col s12 left">
-      <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
-      <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
-    </div>
-  </div>
 
+    <script type='text/javascript'>
+    document.ontouchmove = function(event){
+      event.preventDefault();
+    }
+    $(document).ready(function(){
+      $(".button-collapse").sideNav();
+    })
+    </script>
 
-  <script type='text/javascript'>
-  document.ontouchmove = function(event){
-    event.preventDefault();
-  }
-  $(document).ready(function(){
-    $(".dropdown-button").dropdown({hover:true});
-    $(".button-collapse").sideNav();
-  })
-  </script>
-
-</body>
-</html>
+  </body>
+  </html>

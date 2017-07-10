@@ -72,6 +72,7 @@
       }
 
       login() {
+        this.login_status="";
         return this.client.login(this.shadowRoot.querySelector("#user").value, this.shadowRoot.querySelector("#password").value)
           .then(r => {
             console.log(r);
