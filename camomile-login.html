@@ -12,11 +12,12 @@
     <style>
       :host {
         z-index:50;
+        color:grey;
       }
     </style>
     <template is="dom-if" if="{{!logged_in}}">
     <input placeholder="User" class= 'validate' label="User" type="text" id="user" required>
-      <input placeholder="Password" class= 'validate' label="Password" type="password" id="password" required>
+    <input placeholder="Password" class='validate' label="Password" type="password" id="password" required>
       <a class="waves-effect waves-light btn" on-click="login">Login</a>
     </template>
     <template is="dom-if" if="{{logged_in}}">
@@ -61,7 +62,8 @@
 
       authenticate() {
         return this.client.me()
-          .then(({username}) => {
+          .then(({username,_id}) => {
+            this._id=_id;
             this.username=username;
             this.logged_in=true;
             return this.dispatchEvent(new CustomEvent('login', {}));
