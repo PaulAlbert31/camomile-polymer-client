@@ -1,13 +1,17 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="materialize.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
 
 <script src="getElementAt.js"></script>
 
 <dom-module id="camomile-segmentation-table-touch">
 
   <template>
-    <table>
-      <tr><th>Fragment</th><th>Time(s)</th><th>Data</th></tr>
+  <style include='materialize'></style>
+    <table class='bordered centered responsive-table'>
+      <tr><th style='text-align:center'>Fragment</th><th style='text-align:center'>Time</th><th style='text-align:center'>Data</th></tr>
       <template is="dom-repeat" items="{{annotations}}">
         <tr><td>{{item.fragment}}</td><td>{{item.data.currentTime}}</td><td><pre>{{item.data.coord}}</pre></td></tr>
       </template>
