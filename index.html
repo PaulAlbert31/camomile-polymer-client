@@ -45,10 +45,6 @@
   <nav>
     <div class="nav-wrapper">
       <a href='#!' class='brand-logo'>Camomile Touch Player</a>
-      <ul class='right'>
-      <a href="#" onclick="document.getElementById('read').style.cssText='visibility:hidden';document.getElementById('edit').style.cssText='visibility:visible'" class="btn">Edit</a>
-      <a href="#" onclick="document.getElementById('edit').style.cssText='visibility:hidden';document.getElementById('read').style.cssText='visibility:visible'"data-activates="read" class="btn">Read</a>
-    </ul>
     </div>
   </nav>
 
@@ -87,12 +83,6 @@
     </div>
   </div>
 </div>
-<div id='read'>
-  <camomile-layer-select id="layer2" src-corpus="corpus1"></camomile-layer-select>
-  <camomile-layer-state id="layerState2" src-layer="layer2" src-medium="medium1"></camomile-layer-state>
-  <camomile-segmentation-table-touch id="table2" src-layerstate='layerState2'></camomile-segmentation-table-touch>
-</div>
-
 
     <script type='text/javascript'>
     document.ontouchmove = function(event){
