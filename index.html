@@ -27,6 +27,10 @@
   <link rel="import" href="camomile-layer-create.html">
   <link rel="import" href="camomile-medium-view.html">
   <link rel="import" href="camomile-layer-state.html">
+  <link rel='import' href='camomile-touch-action.html'>
+  <link rel="import" href="camomile-segmentation-table-touch.html">
+  <link rel='import' href='camomile-layer-state.html'>
+
   <style>
   body {
     background-color:#DCD6D5;
@@ -41,6 +45,10 @@
   <nav>
     <div class="nav-wrapper">
       <a href='#!' class='brand-logo'>Camomile Touch Player</a>
+      <ul class='right'>
+      <a href="#" onclick="document.getElementById('read').style.cssText='visibility:hidden';document.getElementById('edit').style.cssText='visibility:visible'" class="btn">Edit</a>
+      <a href="#" onclick="document.getElementById('edit').style.cssText='visibility:hidden';document.getElementById('read').style.cssText='visibility:visible'"data-activates="read" class="btn">Read</a>
+    </ul>
     </div>
   </nav>
 
@@ -65,23 +73,31 @@
             <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
       </ul>
     </div>
-
+    <div id='edit'>
     <div class="row">
       <div class="col s12">
+        <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
         <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
         <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
+        <camomile-touch-action id="action1" src-layerstate="layerState1" src-player='player1' src-login='user1'></camomile-touch-action>
+      </div>
+      <div class="col s12">
+        <camomile-segmentation-table-touch id="table1" src-layerstate='layerState1'></camomile-segmentation-table-touch>
       </div>
     </div>
   </div>
+</div>
+<div id='read'>
+  <camomile-layer-select id="layer2" src-corpus="corpus1"></camomile-layer-select>
+  <camomile-layer-state id="layerState2" src-layer="layer2" src-medium="medium1"></camomile-layer-state>
+  <camomile-segmentation-table-touch id="table2" src-layerstate='layerState2'></camomile-segmentation-table-touch>
+</div>
 
 
     <script type='text/javascript'>
     document.ontouchmove = function(event){
       event.preventDefault();
     }
-    $(document).ready(function(){
-      $(".button-collapse").sideNav();
-    })
     </script>
 
   </body>

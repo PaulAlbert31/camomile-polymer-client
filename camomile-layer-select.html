@@ -1,5 +1,6 @@
 <link rel="import" href="bower_components/polymer/polymer-element.html">
 <link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <link rel="import" href="materialize.html">
 <script src="cookie.js"></script>
 <script src="getElementAt.js"></script>
@@ -13,16 +14,9 @@
     z-index:50;
   }
   </style>
-    <!-- <paper-dropdown-menu-light label="Layer" id="layer">
-      <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{layer}}" attr-for-selected="id">
-        <template is="dom-repeat" items="{{layers}}">
-          <paper-item id="{{item._id}}">{{item.name}}</paper-item>
-        </template>
-      </paper-listbox>
-    </paper-dropdown-menu-light> -->
-    <form   on-submit='select'>
+    <form id='layer-form' on-submit='select'>
       <label>Layer</label>
-            <select id='layer' class='browser-default'  onchange="this.form.sub.click()">
+            <select id='layer' class='browser-default' onloadeddata="this.form.sub.click()" onchange="this.form.sub.click()">
               <option value="" disabled selected>Choose your layer</option>
               <template is="dom-repeat" items="{{layers}}">
                 <option value="{{item._id}}">{{item.name}}</option>
@@ -57,13 +51,15 @@
             const v=getCookie("layer");
             if(v!=="") {
               this.layer=v;
-            }
+              this.$.layer.value=v;
+             }
           },0);
         });
 
         this.client.watchCorpus(corpusInstance.corpus, () => {
           this._populateLayers(corpusInstance.corpus);
         });
+
       }
 
       _resetCorpus() {
@@ -71,6 +67,7 @@
         this.layers=[];
         this.corpus=null;
         this.layer=null;
+        this.layerSet=false;
         setCookie("layer","",0);
 
 
@@ -108,10 +105,13 @@
 
       selectLayer(layer) {
         console.log("layer", layer);
+        this.layerSet=true;
+        this.layer=layer;
         this.dispatchEvent(new CustomEvent('select', {}));
       }
 
       _layerChanged() {
+        this.layerSet=false;
         setCookie("layer",this.layer,10);
         this.selectLayer(this.layer);
       }
