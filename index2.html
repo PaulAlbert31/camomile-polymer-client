@@ -44,15 +44,14 @@
 <body>
   <nav>
     <div class="nav-wrapper">
-      <a href='#!' class='brand-logo'>Camomile Touch Player - Annotation</a>
+      <a href='#!' class='brand-logo'>Camomile Touch Player - Visualisation</a>
       <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
       <ul class="right hide-on-med-and-down">
-        <li><a href='index2.html' class="btn waves-effect">Go to visualisation</a></li>
+        <li><a href='index.html' class="btn waves-effect">Go to annotation</a></li>
       </ul>
       <ul class="side-nav" id="mobile-demo">
-        <li><a href='index2.html' class="btn waves-effect">Go to visualisation</a></li>
+        <li><a href='index.html' class="btn waves-effect">Go to annotation</a></li>
       </ul>
-
     </div>
   </nav>
 
@@ -80,9 +79,7 @@
     <div class="row">
       <div class="col s12">
         <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
-        <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
-        <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
-        <camomile-touch-action id="action1" src-layerstate="layerState1" src-player='player1' src-login='user1'></camomile-touch-action>
+        <camomile-segmentation-table-touch id="table1" src-layerstate='layerState1'></camomile-segmentation-table-touch>
       </div>
     </div>
   </div>
