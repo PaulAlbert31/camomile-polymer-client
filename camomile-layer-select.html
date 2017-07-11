@@ -8,7 +8,11 @@
 <dom-module id="camomile-layer-select">
 
   <template>
-  <style include='materialize'></style>
+  <style include='materialize'>
+  :host{
+    color:grey;
+  }
+  </style>
   <style>
   :host {
     z-index:50;
@@ -44,7 +48,8 @@
         }
 
         this.client = corpusInstance.client;
-        this.corpus=corpusInstance.corpus;
+        this.corpus=corpusInstance.corpus
+        this.clientid=corpusInstance.loginInstance._id;
 
         this._populateLayers(corpusInstance.corpus).then(() => {
           setTimeout(() => {
@@ -77,6 +82,7 @@
       ready() {
         super.ready();
 
+
         const corpusInstance = getElementAt(this.srcCorpus);
 
         if(corpusInstance.corpus)
@@ -91,7 +97,22 @@
         return this.client.getLayers({filter: {'id_corpus': corpus}})
           .then(data => {
             console.log("layers",data);
-            this.layers = data;
+            this.layers=data;
+            // this.layers=[];
+            // this.lay=data;
+            // for (var j=0;j<data.length;j++){
+            //   console.log('1');
+            //   return this.client.getLayerPermissions(this.lay[j]._id)
+            //   .then(result => {
+            //     for (var i=0;i<Object.keys(result.users).length;i++){
+            //     if (Object.keys(result.users)[i]==this.clientid){
+            //       console.log(data[j]);
+            //       this.layers.push(data[j]);
+            //     }
+            //   }
+            // });
+            // }
+            // console.log({'ici':this.layers});
           })
           .catch(err => {
             console.log(err);
@@ -110,20 +131,18 @@
         this.dispatchEvent(new CustomEvent('select', {}));
       }
 
-      _layerChanged() {
-        this.layerSet=false;
-        setCookie("layer",this.layer,10);
-        this.selectLayer(this.layer);
-      }
+      // _layerChanged() {
+      //   this.layerSet=false;
+      //   setCookie("layer",this.layer,10);
+      //   this.selectLayer(this.layer);
+      // }
 
       static get properties() {
         return {
           srcCorpus: String,
           id: String,
-          layer:{
-            type:String,
-            observer:'_layerChanged'
-          }
+          layer:String
+
         };
       }
     }

@@ -8,7 +8,11 @@
 
 <dom-module id="camomile-corpus-select">
   <template>
-  <style include='materialize'></style>
+  <style include='materialize'>
+  :host{
+    color:grey;
+    }
+    </style>
   <form   on-submit='select' name='formcorpus'>
     <label>Corpus</label>
           <select id='corpus' class='browser-default'  onchange="this.form.sub.click()">
@@ -31,6 +35,7 @@
     }
     _setupCorpora(loginInstance) {
       this.client = loginInstance.client;
+      this.loginInstance=loginInstance;
       this.client.getCorpora()
       .then(data => {
         console.log("corpora",data);
@@ -38,7 +43,6 @@
         setTimeout(() => {
           const v=getCookie("corpus");
           if(v!=="") {
-            this.corpus=v;
             this.$.corpus.value=v;
             return this.selectCorpus(v);
           }

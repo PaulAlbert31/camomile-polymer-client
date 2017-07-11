@@ -43,40 +43,42 @@
 
 <body>
   <nav>
-    <div class="nav-wrapper">
-      <a href='#!' class='brand-logo'>Camomile Touch Player - Annotation</a>
-      <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-        <li><a href='index2.html' class="btn waves-effect">Go to visualisation</a></li>
-      </ul>
-      <ul class="side-nav" id="mobile-demo">
-        <li><a href='index2.html' class="btn waves-effect">Go to visualisation</a></li>
-      </ul>
-
-    </div>
-  </nav>
-
-  <div class='row'>
-    <div class='col s9'>
-      <div class='row'>
-        <div class='col s6'>
-          <camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select>
-        </div>
-        <div class='col s6'>
-          <camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select>
-        </div>
-        <div class='col s12'>
-          <camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select>
-        </div>
+  <div class="nav-wrapper">
+    <div class="row">
+      <div class="col s1">
+        <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons show-on-large">menu</i></a>
+      </div>
+      <div class="col s11">
+        <a href='#!' class='brand-logo'>Camomile Touch Player - Annotation</a>
       </div>
     </div>
-    <div class='col s3'>
-      <ul>
+    <ul class="side-nav" id="mobile-demo">
+      <div class='row'>
+        <div class="col s12">
+          <li><a href='index2.html' class="btn waves-effect">Go to visualisation</a></li>
+        </div>
+        <div class="col s12">
         <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
-        <br>
+      </div>
+      <div class="col s12">
         <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
-      </ul>
+      </div>
+        <div class='col s12'>
+          <li><camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select></li>
+        </div>
+        <div class='col s12'>
+          <li><camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select></li>
+        </div>
+        <div class='col s12'>
+          <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
+        </div>
     </div>
+    </ul>
+  </div>
+</nav>
+
+  <div class='row'>
+
     <div class="row">
       <div class="col s12">
         <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>

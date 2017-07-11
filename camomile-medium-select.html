@@ -10,7 +10,11 @@
 <dom-module id="camomile-medium-select">
 
   <template>
-  <style include='materialize'></style>
+  <style include='materialize'>
+  :host{
+    color:grey;
+    }
+    </style>
     <form on-submit='select'>
       <label>Medium</label>
         <select id="medium" class="browser-default" onchange="this.form.sub.click()">
