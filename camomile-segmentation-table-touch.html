@@ -1,0 +1,65 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-segmentation-table-touch">
+
+  <template>
+    <table>
+      <tr><th>Fragment</th><th>Time(s)</th><th>Data</th></tr>
+      <template is="dom-repeat" items="{{annotations}}">
+        <tr><td>{{item.fragment}}</td><td>{{item.data.currentTime}}</td><td><pre>{{item.data.coord}}</pre></td></tr>
+      </template>
+    </table>
+  </template>
+
+  <script>
+    class CamomileSegmentationTableTouch extends Polymer.Element {
+      static get is() {
+        return "camomile-segmentation-table-touch";
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        const layerState = getElementAt(this.srcLayerstate);
+
+        layerState.addEventListener("populate_annotations",({detail:{data}}) => {
+          this.annotations=JSON.parse(JSON.stringify(data));
+          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+        });
+        layerState.addEventListener("reset_annotations",() => {
+          this.annotations=null;
+        });
+
+        layerState.addEventListener("add_annotation",({detail:{data}}) => {
+          this.push("annotations",data);
+          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+        });
+        layerState.addEventListener("update_annotation",({detail:{data}}) => {
+          const annotationIndex=this.annotations.findIndex(annotation => annotation._id===data._id);
+          this.splice("annotations", annotationIndex, 1,data);
+          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+        });
+        layerState.addEventListener("delete_annotation",({detail:{id}}) => {
+          const annotationIndex=this.annotations.findIndex(annotation => annotation._id===id);
+          this.splice("annotations", annotationIndex, 1);
+        });
+      }
+
+      static get properties() {
+        return {
+          srcLayerstate: String,
+          id: String
+        };
+      }
+    }
+    customElements.define(CamomileSegmentationTableTouch.is, CamomileSegmentationTableTouch);
+  </script>
+
+</dom-module>

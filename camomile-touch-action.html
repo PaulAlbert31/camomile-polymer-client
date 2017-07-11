@@ -1,0 +1,186 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-touch-action">
+  <template>
+  </template>
+
+  <script>
+    class CamomileTouchAction extends Polymer.Element {
+      static get is() {
+        return "camomile-touch-action";
+      }
+
+      constructor() {
+        super();
+      }
+
+      _setupLayer(camomileLayerState){
+        this.layerState=camomileLayerState;
+        if (this.player) {
+          if (this.player.wrapped){
+            this.setFunctions();
+            this.player.wrapped=false;}
+        }
+      }
+
+      _setupPlayer(camomilePlayer){
+        this.player=camomilePlayer;
+        if(this.layerState){
+        if(this.layerState.populated&&this.player.wrapped){
+          this.setFunctions();
+          this.player.wrapped=false;
+        }
+      }
+      }
+      _setupLogin(camomileLogin){
+        this.username=camomileLogin.username;
+        if (this.player){
+        if(this.layerState.populated&&this.player.wrapped){
+          this.setFunctions();
+          this.player.wrapped=false;
+        }
+      }
+      }
+
+      _resetLayer(){
+        this.layerState='';
+      }
+      _resetLogin(){
+        this.username='';
+      }
+
+      ready() {
+        super.ready();
+        const camomilePlayer=getElementAt(this.srcPlayer);
+        const camomileLayerState=getElementAt(this.srcLayerstate);
+        const camomileLogin=getElementAt(this.srcLogin);
+        if (camomileLayerState.populated){
+          this._setupLayer(camomileLayerState);
+        }
+        if (camomilePlayer.wrapped){
+          this._setupPlayer(camomilePlayer);
+        }
+        if (camomileLogin.logged_in){
+          this._setupLogin(camomileLogin);
+        }
+        camomileLayerState.addEventListener('populate_annotations',()=> this._setupLayer(camomileLayerState));
+        camomileLayerState.addEventListener('reset',()=>this._resetLayer())
+        camomilePlayer.addEventListener('wrapped',()=> this._setupPlayer(camomilePlayer))
+        camomileLogin.addEventListener('login',()=>this._setupLogin(camomileLogin))
+        camomileLogin.addEventListener('logout',()=>this._resetLogin())
+      }
+
+      addAnnotation(fragment,data){
+        // this.layerState._internalAdd(data,this.username);
+        this.layerState.addAnnotation(fragment,data);
+        console.log({'annotation added':true,'fragment':fragment,'data':data});
+      }
+
+      setFunctions(){
+        this.draw=this.player.draw;
+        var videoElement=this.player.video;
+        var lastMove=null;
+        var i=0;
+        var start=[0,0,0];
+        var touch=this;
+
+        var circle=this.draw.circle(videoElement.clientHeight/20).fill({color:'#f06',opacity:0});
+        var arrow=this.draw.line(0,0,100,100).stroke({color:'#f06',opacity:0,width:10});
+
+        this.player.on('singletap', function(event) {
+          var height = videoElement.clientHeight;
+          var width = videoElement.clientWidth;
+          var rect=videoElement.getBoundingClientRect();
+          event.center.x=(event.center.x-rect.left)/width;
+          event.center.y=(event.center.y-rect.top)/height;;
+          if (videoElement.paused&&videoElement.currentTime==0){
+            videoElement.play();
+          }else{
+            circle.center((event.center.x*width),event.center.y*height);
+            circle.fill({opacity:0.8}).animate(300).fill({opacity:0});
+            touch.addAnnotation('tape simple',{'coord': JSON.stringify({'x':event.center.x,'y':event.center.y}),'currentTime': videoElement.currentTime});
+            console.log({'type': event,
+            'x': (event.center.x),
+            'y': (event.center.y),
+            'currentTime': videoElement.currentTime});
+          }});
+          this.player.on('doubletap', function() {
+            if (videoElement.paused) {
+              videoElement.play()
+              videoElement.playbackRate=1;
+            } else {
+              videoElement.pause()
+            }
+          });
+
+          this.player.on('pinchout', function(event) {
+            if (i==8&&videoElement.playbackRate<1.9) {
+              i=0;
+              videoElement.playbackRate+=0.2;
+              console.log(videoElement.playbackRate)
+              console.log({'type': event.type,
+              'currentTime': videoElement.currentTime,'i':i});
+            } else if(videoElement.playbackRate<1.9){
+              i++;
+            }
+
+          });
+
+          this.player.on('pinchin', function(event) {
+            if (i==8&&videoElement.playbackRate>0.41) {
+              i=0;
+              videoElement.playbackRate-=0.2;
+              console.log(videoElement.playbackRate)
+              console.log({'type': event.type,
+              'currentTime': videoElement.currentTime,'i':i});
+            } else if(videoElement.playbackRate>0.41){
+              i++;
+            }
+          });
+
+          this.player.on('panstart', function(event) {
+            var height = videoElement.clientHeight;
+            var width = videoElement.clientWidth;
+            var rect=videoElement.getBoundingClientRect();
+            event.center.x=(event.center.x-rect.left)/width;
+            event.center.y=(event.center.y-rect.top)/height;;
+            start=[event.center.x,event.center.y,videoElement.currentTime]
+            console.log({'type': event.type,
+            'x': (event.center.x),
+            'y': (event.center.y),
+            'currentTime': videoElement.currentTime});
+          });
+          this.player.on('panend', function(event) {
+            var height = videoElement.clientHeight;
+            var width = videoElement.clientWidth;
+            var rect=videoElement.getBoundingClientRect();
+            event.center.x=(event.center.x-rect.left)/width;
+            event.center.y=(event.center.y-rect.top)/height;;
+            touch.addAnnotation('pan',{'coord':JSON.stringify({'start':[start[0],start[1]],'end':[event.center.x,event.center.y]}),'currentTime':videoElement.currentTime});
+            console.log({'type': event.type,
+            'x': (event.center.x),
+            'y': (event.center.y),
+            'currentTime': videoElement.currentTime});
+            if (videoElement.currentTime-start[2]<2) {
+              arrow.stroke({opacity:0.8}).plot(start[0]*width,start[1]*height,(event.center.x*width),event.center.y*height).animate(300).stroke({opacity:0});
+            }
+          });
+
+      }
+
+
+      static get properties() {
+        return {
+          srcLogin: String,
+          srcPlayer: String,
+          srcLayerstate:String,
+          id: String
+        };
+      }
+    }
+    customElements.define(CamomileTouchAction.is, CamomileTouchAction);
+  </script>
+
+</dom-module>
