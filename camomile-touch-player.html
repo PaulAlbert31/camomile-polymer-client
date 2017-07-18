@@ -11,7 +11,7 @@
 
   <template>
   <style include='materialize'></style>
-  <div class='hide-on-large-only'><p class='flow-text'>Rotate to get maxium video size</p></div>
+  <div class='hide-on-med-and-up'><blockquote>Rotate to get maxium video size</blockquote></div>
   <video id="video" width=100%>
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
@@ -19,7 +19,7 @@
   </template>
 
   <script>
-  class CamomilePlayer extends Polymer.Element {
+  class CamomileTouchPlayer extends Polymer.Element {
     static get is() {
       return "camomile-touch-player";
     }
@@ -208,7 +208,7 @@
         }
       }
     }
-    customElements.define(CamomilePlayer.is, CamomilePlayer);
+    customElements.define(CamomileTouchPlayer.is, CamomileTouchPlayer);
     </script>
 
   </dom-module>
