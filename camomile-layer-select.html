@@ -87,12 +87,11 @@ class CamomileLayerSelect extends Polymer.Element {
   }
 
   _populateLayers(corpus) {
-    return this.client.getLayers({filter: {'id_corpus': corpus}}).then(data => {
-      this.lay=data;
-      this.layers=[];
-      this._getCorrectLayers()
-      return this.layers
-    })
+    return this.client.getLayers({filter: {'id_corpus': corpus}})
+          .then(data => {
+            console.log("layers",data);
+            this.layers = data;
+          })
     .catch(err => {
       console.log(err);
     });
