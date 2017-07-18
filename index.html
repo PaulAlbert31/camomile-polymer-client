@@ -22,7 +22,7 @@
   <link rel="import" href="camomile-touch-player.html">
   <link rel="import" href="camomile-corpus-create.html">
   <link rel="import" href="camomile-medium-create.html">
-  <link rel="import" href="camomile-layer-select.html">
+  <link rel="import" href="camomile-layer-select-write.html">
   <link rel="import" href="camomile-layer-create.html">
   <link rel="import" href="camomile-medium-view.html">
   <link rel="import" href="camomile-layer-state.html">
@@ -49,7 +49,7 @@
         <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons show-on-large">menu</i></a>
       </div>
       <div class="col s11">
-        <a href='#!' class='brand-logo'>Camomile Touch Player - Annotation</a>
+        <a href='index.html' class='brand-logo center' style='top:-33%'><p class='flow-text'>Camomile Touch Player - Annotation</p></a>
       </div>
     </div>
     <ul class="side-nav" id="mobile-demo">
@@ -70,7 +70,7 @@
           <li><camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select></li>
         </div>
         <div class='col s12'>
-          <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
+          <li><camomile-layer-select-write id="layer1" src-corpus="corpus1"></camomile-layer-select-write></li>
         </div>
     </div>
     </ul>
@@ -93,7 +93,9 @@
   <script type='text/javascript'>
 
   $(document).ready(function() {
-    $(".button-collapse").sideNav();
+    $(".button-collapse").sideNav({
+      menuWidth:350
+    });
   })
   </script>
 
