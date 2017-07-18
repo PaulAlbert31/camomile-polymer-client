@@ -17,21 +17,19 @@ class CamomileLayerSelectRead extends CamomileLayerSelect {
   }
 
   _getCorrectLayers(){
-    this.layers=[];
     let totalResults=[];
     let prom=this.client.getLayerPermissions(this.lay[0]._id)
     for (let j=0;j<this.lay.length;j++){
       prom=prom.then(result => {
         for (let i=0;i<Object.keys(result.users).length;i++){
           if (Object.keys(result.users)[i]==this.clientid && result.users[Object.keys(result.users)[i]]>0){
-            this.layers.push(this.lay[j]);
-            totalResults.push(result);
+            totalResults.push(this.lay[j]);
           }
         }
         return this.client.getLayerPermissions(this.lay[j]._id)
-      })
-    };
-      return prom
+      });
+    }
+      return prom.then(() => {this.layers=totalResults});
     }
 
 
