@@ -17,19 +17,19 @@ class CamomileLayerSelectWrite extends CamomileLayerSelect {
   }
 
   _getCorrectLayers(){
-    this.layers=[];
     let totalResults=[];
     let prom=this.client.getLayerPermissions(this.lay[0]._id)
     for (let j=0;j<this.lay.length;j++){
       prom=prom.then(result => {
         for (let i=0;i<Object.keys(result.users).length;i++){
-          if (Object.keys(result.users)[i]==this.clientid && result.users[this.clientid]>1){
-            this.layers.push(this.lay[j]);
+          if (Object.keys(result.users)[i]==this.clientid && result.users[Object.keys(result.users)[i]]>1){
+            totalResults.push(this.lay[j]);
           }
         }
         return this.client.getLayerPermissions(this.lay[j]._id)
-      })};
-      return prom.then(result => totalResults.concat(result))
+      });
+    }
+      return prom.then(() => {this.layers=totalResults});
     }
 
   static get properties() {
