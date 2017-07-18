@@ -1,0 +1,50 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel='import' href="camomile-layer-select.html">
+<script src="cookie.js"></script>
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-layer-select-read">
+
+<script>
+class CamomileLayerSelectRead extends CamomileLayerSelect {
+  static get is() {
+    return "camomile-layer-select-read";
+  }
+
+  constructor() {
+    super();
+  }
+
+  _getCorrectLayers(){
+    this.layers=[];
+    let totalResults=[];
+    let prom=this.client.getLayerPermissions(this.lay[0]._id)
+    for (let j=0;j<this.lay.length;j++){
+      prom=prom.then(result => {
+        for (let i=0;i<Object.keys(result.users).length;i++){
+          if (Object.keys(result.users)[i]==this.clientid && result.users[Object.keys(result.users)[i]]>0){
+            this.layers.push(this.lay[j]);
+            totalResults.push(result);
+          }
+        }
+        return this.client.getLayerPermissions(this.lay[j]._id)
+      })
+    };
+      return prom
+    }
+
+
+  static get properties() {
+    return {
+      srcCorpus: String,
+      id: String,
+      layer:String
+
+    };
+  }
+}
+customElements.define(CamomileLayerSelectRead.is, CamomileLayerSelectRead);
+</script>
+
+</dom-module>
