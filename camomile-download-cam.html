@@ -1,0 +1,38 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-download.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-download-cam">
+
+
+<script>
+class CamomileDownloadCam extends CamomileDownload {
+  static get is() {
+    return "camomile-download-cam";
+  }
+  constructor() {
+    super();
+  }
+  ready() {
+    super.ready();
+  }
+
+  _parseAnnotations(annotation){
+    this._download(JSON.stringify(annotation,null,3),'.cam');
+  }
+
+  static get properties() {
+    return {
+      srcLayer: String,
+      id: String,
+    };
+  }
+}
+customElements.define(CamomileDownloadCam.is, CamomileDownloadCam);
+</script>
+
+</dom-module>

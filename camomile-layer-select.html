@@ -18,7 +18,7 @@
   <form id='layer-form' on-submit='select'>
     <label>Layer</label>
     <select id='layer' class='browser-default' onchange="this.form.sub.click()">
-      <option value="" disabled selected>Choose your layer</option>
+      <option value="" selected>Choose your layer</option>
       <template is="dom-repeat" items="{{layers}}" id='layersName'>
         <option value="{{item._id}}">{{item.name}}</option>
       </template>
@@ -45,8 +45,8 @@ class CamomileLayerSelect extends Polymer.Element {
     }
 
     this.client = corpusInstance.client;
-    this.corpus=corpusInstance.corpus
-    this.clientid=corpusInstance.loginInstance._id;
+    this.corpus = corpusInstance.corpus
+    this.clientid = corpusInstance.loginInstance._id;
 
     this._populateLayers(corpusInstance.corpus).then(() => {
       setTimeout(() => {

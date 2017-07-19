@@ -1,0 +1,63 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-upload.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-upload-cam">
+
+
+<script>
+class CamomileUploadCam extends CamomileUpload {
+  static get is() {
+    return "camomile-upload-cam";
+  }
+
+_fileAction(file){
+  for(let j=0,f;f=file[j];j++){
+  // Only process camomile files.
+
+  if (!f.name.endsWith('.cam')) {
+    window.alert("Enter a Camomile annotation file (.cam)")
+    continue;
+  }
+  var reader = new FileReader();
+  const layerState=this.layerState;
+  // Closure to capture the file information.
+  reader.onload = (function(theFile) {
+    return function(e) {
+      try{
+      var parsedFile=JSON.parse(e.target.result);
+      for(let i=0;i<parsedFile.length;i++){
+        layerState.addAnnotation(parsedFile[i].fragment,{'coord':parsedFile[i].data['coord'],'currentTime':parsedFile[i].data['currentTime']})
+      }
+      window.alert("Annotations added")
+    }
+    catch(e){
+      window.alert('An error occured, please verify the file extention (.cam)');
+      console.log(e);
+    }
+    };
+  })(f);
+  //If error
+  reader.onerror = function (evt){
+    console.log(evt);
+    window.alert("An error occured")
+  }
+  reader.readAsText(f,'UTF-8');
+}
+}
+
+  static get properties() {
+    return {
+      id: String,
+      srcLayerstate: String,
+    };
+  }
+
+}
+customElements.define(CamomileUploadCam.is, CamomileUploadCam);
+</script>
+</dom-module>

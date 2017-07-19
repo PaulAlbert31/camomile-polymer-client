@@ -18,11 +18,11 @@
     <template is="dom-if" if="{{!logged_in}}">
     <input placeholder="User" class= 'validate' label="User" type="text" id="user" required>
     <input placeholder="Password" class='validate' label="Password" type="password" id="password" required>
-      <a class="waves-effect waves-light btn" on-click="login">Login</a>
+      <a class="waves-effect waves-light btn red lighten-2" on-click="login">Login</a>
     </template>
     <template is="dom-if" if="{{logged_in}}">
       {{username}}
-      <a class="btn waves-effect waves-light" on-click="logout">Logout</a>
+      <a class="btn waves-effect waves-light red lighten-2" on-click="logout">Logout</a>
     </template>
     {{login_status}}
   </template>

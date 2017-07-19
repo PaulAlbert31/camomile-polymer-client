@@ -1,0 +1,80 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="materialize.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-download">
+
+  <template>
+  <style include='materialize'>
+  :host{
+    color:grey;
+    }
+    </style>
+    <div class="row">
+      <div class="col s12 center">
+        <a class="waves-effect waves-light btn red lighten-2" style='margin-top:7%;display:none' id='downloadButton'><i class="material-icons right">file_download</i>download</a>
+
+      </div>
+    </div>
+</template>
+
+<script>
+class CamomileDownload extends Polymer.Element {
+  static get is() {
+    return "camomile-download";
+  }
+  constructor() {
+    super();
+  }
+  ready() {
+    super.ready();
+    const layerInstance = getElementAt(this.srcLayer);
+    if(layerInstance.layer)
+      this._setupLayer(layerInstance);
+    layerInstance.addEventListener("select", () => this._setupLayer(layerInstance));
+    layerInstance.addEventListener("deselect", () => this._resetLayer());
+
+  }
+  _setupLayer(layerInstance) {
+    console.log('set')
+    this.client = layerInstance.client;
+    this.layer = layerInstance.layer;
+    this.client.getLayer(this.layer).then(result=>{this.layerName=result.name});
+    this.client.getAnnotations({filter:{'id_layer':this.layer}}).then(result=>{this._parseAnnotations(result)});
+  }
+
+  _resetLayer(){
+    console.log('reset');
+    this.client=null;
+    this.layer=null;
+    this.layerName=null;
+    this.$.downloadButton.removeAttribute('href');
+    this.$.downloadButton.removeAttribute('download');
+    this.$.downloadButton.style.display='none';
+    this.dispatchEvent(new CustomEvent("reset",{}));
+  }
+  _parseAnnotations(annotation){
+    this._download(JSON.stringify(annotation,null,3),'.txt');
+  }
+  _download(annotationParsed,extention){
+    var downloadButton = this.$.downloadButton;
+    downloadButton.style.display='inline-block';
+    downloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(annotationParsed));
+    downloadButton.setAttribute('download', this.layerName+extention);
+  }
+
+
+  static get properties() {
+    return {
+      srcLayer: String,
+      id: String,
+    };
+  }
+}
+customElements.define(CamomileDownload.is, CamomileDownload);
+</script>
+
+</dom-module>
