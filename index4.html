@@ -29,6 +29,7 @@
   <link rel='import' href='camomile-touch-action.html'>
   <link rel="import" href="camomile-segmentation-table-touch.html">
   <link rel='import' href='camomile-layer-state.html'>
+  <link rel="import" href="camomile-download-cam.html">
 
 
   <style>
@@ -51,48 +52,45 @@
         <div class="col s1">
           <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons show-on-large">menu</i></a>
         </div>
-        <div class="col s11">
-          <a href='index2.html' class='brand-logo' ><img class='responsive-img' src="lib/videojs-touch.png"></a>
+    <div class="col s6">
+            <a href='index.html' class='brand-logo' ><img class='responsive-img' src="lib/videojs-touch.png"></a>
+          </div>
+          <div class="col s2 right">
+            <a class='dropdown-button' href='#' data-activates='dropdown1'><i class="material-icons show-on-large">keyboard_arrow_down</i></a>
+          </div>
+          <ul id="dropdown1" class='dropdown-content'>
+            <li><a href='index.html' class='red-text text-lighten-2'>Annotation</a></li>
+            <li><a href='index2.html' class='red-text text-lighten-2'>Visualisation</a></li>
+            <li><a href='index3.html' class='red-text text-lighten-2'>Upload</a></li>
+            <li class="divider red lighten-2"></li>
+            <li><a href='index4.html' class='grey lighten-2 red-text text-lighten-2'>Download</a></li>
+          </ul>
         </div>
-        <div class="col s2 right">
-          <a class='dropdown-button' href='#' data-activates='dropdown1'><i class="material-icons show-on-large">keyboard_arrow_down</i></a>
-        </div>
-        <ul id="dropdown1" class='dropdown-content'>
-          <li><a href='index.html' class='red-text text-lighten-2'>Annotation</a></li>
-          <li class="divider red lighten-2"></li>
-          <li><a href='index2.html' class='grey lighten-2 red-text text-lighten-2'>Visualisation</a></li>
-          <li class="divider red lighten-2"></li>
-          <li><a href='index3.html' class='red-text text-lighten-2'>Upload</a></li>
-          <li><a href='index4.html' class='red-text text-lighten-2'>Download</a></li>
-        </ul>
-      </div>
-      <ul class="side-nav" id="mobile-demo">
-        <div class='row'>
+        <ul class="side-nav" id="mobile-demo">
+          <div class='row'>
+            <div class="col s12">
+            <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
+          </div>
           <div class="col s12">
-          <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
+            <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+          </div>
         </div>
-        <div class="col s12">
-          <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
-        </div>
-          <div class='col s12'>
-            <li><camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select></li>
-          </div>
-          <div class='col s12'>
-            <li><camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select></li>
-          </div>
-          <div class='col s12'>
-            <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
-          </div>
-      </div>
-      </ul>
+        </ul>
     </div>
   </nav>
 
 
-    <div class="row" style='margin-top:7%'>
+    <div class="row" style='margin-top:5%'>
+      <ul>
+          <div class='col s6'>
+            <li><camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select></li>
+          </div>
+          <div class='col s6'>
+            <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
+          </div>
+      </ul>
       <div class="col s12">
-        <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
-        <camomile-segmentation-table-touch id="table1" src-layerstate='layerState1'></camomile-segmentation-table-touch>
+        <camomile-download-cam id='download1' src-layer='layer1'></camomile-download-cam>
       </div>
     </div>
 

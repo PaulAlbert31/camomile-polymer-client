@@ -1,0 +1,110 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="materialize.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-upload">
+
+  <template>
+  <style include='materialize'>
+  :host{
+    color:grey;
+    }
+    .dropzone {
+	width: 100%;
+  height: 70%;
+	padding: 20%;
+	text-align: center;
+  margin-top:10%;
+	border: 3px dashed #ccc; }
+    </style>
+    <div class='row container'>
+    <div id="drop_zone" class='dropzone'>Drop files here</div>
+  </div>
+<output id="list"></output>
+<span id='boite'></span>
+</template>
+
+<script>
+class CamomileUpload extends Polymer.Element {
+  static get is() {
+    return "camomile-upload";
+  }
+  constructor() {
+    super();
+  }
+  ready() {
+    super.ready();
+    const camomileLayerState = getElementAt(this.srcLayerstate)
+    if (camomileLayerState.populated){
+      this._setupLayer(camomileLayerState);
+    }
+    camomileLayerState.addEventListener('populate_annotations',()=> this._setupLayer(camomileLayerState));
+    camomileLayerState.addEventListener('reset',()=>this._resetLayer())
+    // Setup the dnd listeners.
+    let upload=this;
+    this.$.drop_zone.addEventListener('dragover', this._handleDragOver, false);
+    this.$.drop_zone.addEventListener('drop', this._handleFileSelect, false);
+}
+_setupLayer(camomileLayerState){
+  this.layerState=camomileLayerState;
+}
+
+_resetLayer(){
+  this.layerState=null;
+}
+
+_handleDragOver(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+  evt.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+}
+
+_handleFileSelect(evt) {
+  evt.stopPropagation();
+  evt.preventDefault();
+  var files = evt.dataTransfer.files; // FileList object.
+  this.parentNode.parentNode.host._fileAction(files)
+
+}
+
+_fileAction(file){
+  for(let j=0,f;f=file[j];j++){
+    // Only process image files.
+    if (!f.type.match('image.*')) {
+      window.alert("Enter an image")
+      continue;
+    }
+    var boite = this.$.boite;
+    var list = this.$.list;
+
+    var reader = new FileReader();
+
+    // Closure to capture the file information.
+    reader.onload = (function(theFile) {
+      return function(e) {
+        // Render thumbnail.
+        boite.innerHTML = ['<img class="thumb" src="', e.target.result,
+                          '" title="', escape(theFile.name), '"/>'].join('');
+        list.insertBefore(boite, null);
+      };
+    })(f);
+
+    // Read in the image file as a data URL.
+    reader.readAsDataURL(f);
+}
+}
+
+  static get properties() {
+    return {
+      id: String,
+      srcLayerstate: String,
+    };
+  }
+
+}
+customElements.define(CamomileUpload.is, CamomileUpload);
+</script>
+</dom-module>
