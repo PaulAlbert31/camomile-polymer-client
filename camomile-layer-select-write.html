@@ -12,10 +12,6 @@ class CamomileLayerSelectWrite extends CamomileLayerSelect {
     return "camomile-layer-select-write";
   }
 
-  constructor() {
-    super();
-  }
-
   _getCorrectLayers(){
     let totalResults=[];
     let prom=this.client.getLayerPermissions(this.lay[0]._id)
@@ -32,14 +28,6 @@ class CamomileLayerSelectWrite extends CamomileLayerSelect {
       return prom.then(() => {this.layers=totalResults});
     }
 
-  static get properties() {
-    return {
-      srcCorpus: String,
-      id: String,
-      layer:String
-
-    };
-  }
 }
 customElements.define(CamomileLayerSelectWrite.is, CamomileLayerSelectWrite);
 </script>

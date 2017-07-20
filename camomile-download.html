@@ -16,7 +16,6 @@
     <div class="row">
       <div class="col s12 center">
         <a class="waves-effect waves-light btn red lighten-2" style='margin-top:7%;display:none' id='downloadButton'><i class="material-icons right">file_download</i>download</a>
-
       </div>
     </div>
 </template>
@@ -57,7 +56,15 @@ class CamomileDownload extends Polymer.Element {
     this.dispatchEvent(new CustomEvent("reset",{}));
   }
   _parseAnnotations(annotation){
-    this._download(JSON.stringify(annotation,null,3),'.txt');
+    this._download(this._format(annotation),this._extention());
+  }
+
+  _extention(){
+      return '.json'
+  }
+
+  _format(annotation){
+    return JSON.stringify(annotation,null,3)
   }
   _download(annotationParsed,extention){
     var downloadButton = this.$.downloadButton;

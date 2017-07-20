@@ -104,14 +104,15 @@ class CamomileLayerSelect extends Polymer.Element {
 
   select(e) {
     e.preventDefault();
-    setCookie("layer",this.$.layer.value,10);
     this.selectLayer(this.$.layer.value);
   }
 
   selectLayer(layer) {
     console.log("layer", layer);
+    setCookie("layer",layer,10);
     this.layerSet=true;
     this.layer=layer;
+    this.$.layer.value=layer;
     this.dispatchEvent(new CustomEvent('select', {}));
   }
   _layerChanged() {

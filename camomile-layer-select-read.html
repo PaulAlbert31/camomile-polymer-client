@@ -12,10 +12,6 @@ class CamomileLayerSelectRead extends CamomileLayerSelect {
     return "camomile-layer-select-read";
   }
 
-  constructor() {
-    super();
-  }
-
   _getCorrectLayers(){
     let totalResults=[];
     let prom=this.client.getLayerPermissions(this.lay[0]._id)
@@ -32,15 +28,6 @@ class CamomileLayerSelectRead extends CamomileLayerSelect {
       return prom.then(() => {this.layers=totalResults});
     }
 
-
-  static get properties() {
-    return {
-      srcCorpus: String,
-      id: String,
-      layer:String
-
-    };
-  }
 }
 customElements.define(CamomileLayerSelectRead.is, CamomileLayerSelectRead);
 </script>

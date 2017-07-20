@@ -73,9 +73,10 @@
         if(this.layer) {
           this.client.unwatchLayer(this.layer);
         }
-
+        this.layerInstance = layerInstance;
         this.client = layerInstance.client;
         this.layer=layerInstance.layer;
+        this.fragment_type=layerInstance.fragment_type;
         if(this.medium)
           this._populateAnnotations(this.layer,this.medium);
 
@@ -113,6 +114,8 @@
         this.client= null;
         this.layer=null;
         this.annotations=null;
+        this.layerInstance=null;
+        this.fragment_type=null;
         this.dispatchEvent(new CustomEvent("reset",{}));
       }
 

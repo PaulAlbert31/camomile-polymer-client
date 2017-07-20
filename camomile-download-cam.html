@@ -14,23 +14,11 @@ class CamomileDownloadCam extends CamomileDownload {
   static get is() {
     return "camomile-download-cam";
   }
-  constructor() {
-    super();
-  }
-  ready() {
-    super.ready();
+  
+  _extention(){
+    return '.cam'
   }
 
-  _parseAnnotations(annotation){
-    this._download(JSON.stringify(annotation,null,3),'.cam');
-  }
-
-  static get properties() {
-    return {
-      srcLayer: String,
-      id: String,
-    };
-  }
 }
 customElements.define(CamomileDownloadCam.is, CamomileDownloadCam);
 </script>
