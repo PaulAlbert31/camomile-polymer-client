@@ -96,6 +96,31 @@ _fileAction(file){
     reader.readAsDataURL(f);
 }
 }
+//Returns the current layer if its fragment_type is compatible.
+//If not but other layers are compatible, returns the first avalible layer found.
+//If no layer is compatible, returns null and a warning message.
+_checkLayer(layerState,fragment_type){
+  if(!(layerState.fragment_type==fragment_type)){
+    window.alert('The layer you selected is not compatible, we will try to find a new one for you')
+    var newLayer=this._getAvalibleLayers(layerState.layerInstance,fragment_type);
+    if(newLayer==null){
+    window.alert('No combatible layer was found, please create a new one in the administration menu')
+  }
+  return newLayer
+
+
+}
+  return layerState.layerInstance
+}
+_getAvalibleLayers(layerInstance,fragment_type){
+  const avalibleLayers = layerInstance.layers
+  for (let u=0;u<avalibleLayers.length;u++){
+    if (avalibleLayers[u].fragment_type==fragment_type){
+      return avalibleLayers[u]
+    }
+  }
+  return null;
+}
 
   static get properties() {
     return {

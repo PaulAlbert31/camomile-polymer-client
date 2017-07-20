@@ -25,6 +25,11 @@ _fileAction(file){
   }
   var reader = new FileReader();
   const layerState=this.layerState;
+  const result=this._checkLayer(layerState,'camomile-simple-annotation')
+  if (result==null){
+    return null
+  }else {
+  layerState.layerInstance.selectLayer(result._id)
   // Closure to capture the file information.
   reader.onload = (function(theFile) {
     return function(e) {
@@ -36,12 +41,12 @@ _fileAction(file){
       window.alert("Annotations added")
     }
     catch(e){
-      window.alert('An error occured, please verify the file extention (.cam)');
+      window.alert('An error occured, please try reloading the page');
       console.log(e);
     }
     };
   })(f);
-  //If error
+  //Manage errors
   reader.onerror = function (evt){
     console.log(evt);
     window.alert("An error occured")
@@ -49,13 +54,11 @@ _fileAction(file){
   reader.readAsText(f,'UTF-8');
 }
 }
+}
 
-  static get properties() {
-    return {
-      id: String,
-      srcLayerstate: String,
-    };
-  }
+
+
+
 
 }
 customElements.define(CamomileUploadCam.is, CamomileUploadCam);
