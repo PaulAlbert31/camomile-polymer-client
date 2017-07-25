@@ -3,6 +3,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
 <script src="getElementAt.js"></script>
 
 <dom-module id="camomile-download">
@@ -55,21 +56,21 @@ class CamomileDownload extends Polymer.Element {
     this.$.downloadButton.style.display='none';
     this.dispatchEvent(new CustomEvent("reset",{}));
   }
-  _parseAnnotations(annotation){
-    this._download(this._format(annotation),this._extention());
+  _parseAnnotations(annotations){
+    this._download(this._format(annotations),this._extention());
   }
 
   _extention(){
       return '.json'
   }
 
-  _format(annotation){
-    return JSON.stringify(annotation,null,3)
+  _format(annotations){
+    return JSON.stringify(annotations)
   }
-  _download(annotationParsed,extention){
+  _download(annotationsParsed,extention){
     var downloadButton = this.$.downloadButton;
     downloadButton.style.display='inline-block';
-    downloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(annotationParsed));
+    downloadButton.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(annotationsParsed));
     downloadButton.setAttribute('download', this.layerName+extention);
   }
 

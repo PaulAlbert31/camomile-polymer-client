@@ -4,6 +4,8 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script type="text/javascript" src="./node_modules/lz-string/libs/lz-string.js"></script>
+
 <script src="getElementAt.js"></script>
 
 <dom-module id="camomile-download-cam">
@@ -14,9 +16,17 @@ class CamomileDownloadCam extends CamomileDownload {
   static get is() {
     return "camomile-download-cam";
   }
-  
+
   _extention(){
     return '.cam'
+  }
+  _format(annotations){
+    for (let i=0;i<annotations.length;i++){
+    annotations[i].data=LZString.decompressFromEncodedURIComponent(annotations[i].data)
+    annotations[i].fragment=LZString.decompressFromEncodedURIComponent(annotations[i].fragment)
+  }
+    return JSON.stringify(annotations,null,3).replace(/\\/g,'')
+
   }
 
 }

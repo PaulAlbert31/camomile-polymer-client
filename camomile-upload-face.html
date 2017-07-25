@@ -1,0 +1,92 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-upload.html">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script type="text/javascript" src="./node_modules/lz-string/libs/lz-string.js"></script>
+
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-upload-face">
+
+<script>
+class CamomileUploadFace extends CamomileUpload {
+  static get is() {
+    return "camomile-upload-face";
+  }
+
+_fileAction(file){
+  for(let j=0,f;f=file[j];j++){
+  // Only process tracks files.
+
+  if (!f.name.endsWith('.tracks')) {
+    window.alert("Enter a face tracking file (.tracks)")
+    continue;
+  }
+  var reader = new FileReader();
+  const upload = this;
+  const layerState=this.layerState;
+  const result=this._checkLayer(layerState,'camomile-face-track')
+  if (result==null){
+    return null
+  }else {
+  layerState.layerInstance.selectLayer(result._id)
+  // Closure to capture the file information.
+  reader.onload = (function(theFile) {
+    return function(e) {
+      function doWork(parsedLine,smallA){
+        smallA[parsedLine[1]][0].push([parsedLine[2],parsedLine[3],parsedLine[4],parsedLine[5]]);
+        smallA[parsedLine[1]][1].push(parsedLine[0])
+      }
+      try{
+      const parsedFile=e.target.result.split('\n');
+      var parsedLine=[];
+      var h=0.1;
+      var smallA=[];smallA.push([[],[]])
+
+
+      for(let i=0;i<parsedFile.length;i++){
+        parsedLine=parsedFile[i].split(' ')
+        if (parsedLine[1]==undefined) {
+          continue;
+        }
+        if (smallA[parsedLine[1]]==undefined) {
+          smallA.push([[],[]])
+        }
+        if (Math.floor(i/parsedFile.length*10)/10==h){
+          setTimeout(upload._handleProgress(),100,h)
+          doWork(parsedLine,smallA)
+          h+=0.13;
+          h=Math.floor(h*10)/10;
+        }else {
+          doWork(parsedLine,smallA);
+        }
+      }
+      for(let i=0;i<smallA.length;i++){
+
+        layerState.addAnnotation(LZString.compressToEncodedURIComponent(JSON.stringify({'startTime':smallA[i][1][0],'durationTime':[smallA[i][1][0],smallA[i][1][smallA[i][1].length-1]]})),LZString.compressToEncodedURIComponent(JSON.stringify({'track_id':i,'coord':smallA[i][0]})))
+      }
+      window.alert("Annotations added")
+    }
+    catch(e){
+      window.alert('An error occured, please try reloading the page');
+      console.log(e);
+    }
+
+  }
+  })(f);
+  //Manage errors
+  reader.onerror = function (evt){
+    console.log(evt);
+    window.alert("An error occured")
+  }
+  reader.readAsText(f,'UTF-8');
+}
+}
+}
+}
+customElements.define(CamomileUploadFace.is, CamomileUploadFace);
+</script>
+</dom-module>

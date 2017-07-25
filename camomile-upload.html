@@ -19,12 +19,25 @@
 	text-align: center;
   margin-top:10%;
 	border: 3px dashed #ccc; }
+  #myProgress {
+    width: 100%;
+    background-color: grey;
+  }
+  #myBar {
+    width: 0%;
+    height: 30px;
+    background-color: green;
+  }
     </style>
     <div class='row container'>
     <div id="drop_zone" class='dropzone'>Drop files here</div>
   </div>
 <output id="list"></output>
 <span id='boite'></span>
+<label id = 'myBarText'>0%</label>
+<div id="myProgress">
+  <div id="myBar"></div>
+</div>
 </template>
 
 <script>
@@ -47,6 +60,7 @@ class CamomileUpload extends Polymer.Element {
     let upload=this;
     this.$.drop_zone.addEventListener('dragover', this._handleDragOver, false);
     this.$.drop_zone.addEventListener('drop', this._handleFileSelect, false);
+    this.addEventListener('progress', this._handleProgress)
 }
 _setupLayer(camomileLayerState){
   this.layerState=camomileLayerState;
@@ -54,6 +68,14 @@ _setupLayer(camomileLayerState){
 
 _resetLayer(){
   this.layerState=null;
+}
+
+_handleProgress(h){
+  var progressBar = this.$.myProgress.lastChild.previousSibling;
+  var width = h*100+10;
+  this.$.myBarText.innerHTML = width + '%';
+  progressBar.style.width = width + '%';
+
 }
 
 _handleDragOver(evt) {
@@ -66,7 +88,10 @@ _handleFileSelect(evt) {
   evt.stopPropagation();
   evt.preventDefault();
   var files = evt.dataTransfer.files; // FileList object.
+  this.parentNode.parentNode.host.$.myProgress.lastChild.previousSibling.width=0+'%';
+  this.parentNode.parentNode.host.$.myBarText.innerHTML = '0%';
   this.parentNode.parentNode.host._fileAction(files)
+
 
 }
 
@@ -101,7 +126,7 @@ _fileAction(file){
 //If no layer is compatible, returns null and a warning message.
 _checkLayer(layerState,fragment_type){
   if(!(layerState.fragment_type==fragment_type)){
-    window.alert('The layer you selected is not compatible, we will try to find a new one for you')
+    // window.alert('The layer you selected is not compatible, we will try to find a new one for you')
     var newLayer=this._getAvalibleLayers(layerState.layerInstance,fragment_type);
     if(newLayer==null){
     window.alert('No combatible layer was found, please create a new one in the administration menu')
@@ -110,7 +135,7 @@ _checkLayer(layerState,fragment_type){
 
 
 }
-  return layerState.layerInstance
+  return layerState.client.getLayer(layerState.layer)
 }
 _getAvalibleLayers(layerInstance,fragment_type){
   const avalibleLayers = layerInstance.layers
