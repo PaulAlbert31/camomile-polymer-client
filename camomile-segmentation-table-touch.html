@@ -3,6 +3,8 @@
 <link rel="import" href="materialize.html">
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script type="text/javascript" src="./node_modules/lz-string/libs/lz-string.js"></script>
+
 
 <script src="getElementAt.js"></script>
 
@@ -11,9 +13,9 @@
   <template>
   <style include='materialize'></style>
     <table class='bordered centered responsive-table'>
-      <tr><th style='text-align:center'>Fragment</th><th style='text-align:center'>Time</th><th style='text-align:center'>Data</th></tr>
+      <tr><th style='text-align:center'>Track number</th><th style='text-align:center'>Start and end times</th><th style='text-align:center'>Data</th></tr>
       <template is="dom-repeat" items="{{annotations}}">
-        <tr><td>{{item.fragment}}</td><td>{{item.data.currentTime}}</td><td><pre>{{item.data.coord}}</pre></td></tr>
+        <tr><td>{{item.data.track_id}}</td><td>{{item.fragment.durationTime}}</td><td><pre>{{item.data.coord}}</pre></td></tr>
       </template>
     </table>
   </template>
@@ -35,20 +37,26 @@
 
         layerState.addEventListener("populate_annotations",({detail:{data}}) => {
           this.annotations=JSON.parse(JSON.stringify(data));
-          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+          var annotations=this.annotations;
+          for (let i=0;i<annotations.length;i++){
+          annotations[i].data=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].data))
+          annotations[i].fragment=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].fragment))
+          }
+          this.annotations.sort((a,b)=>a.data.track_id-b.data.track_id);
         });
+
         layerState.addEventListener("reset_annotations",() => {
           this.annotations=null;
         });
 
         layerState.addEventListener("add_annotation",({detail:{data}}) => {
           this.push("annotations",data);
-          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+          this.annotations.sort((a,b)=>a.fragment.currentTime-b.fragment.currentTime);
         });
         layerState.addEventListener("update_annotation",({detail:{data}}) => {
           const annotationIndex=this.annotations.findIndex(annotation => annotation._id===data._id);
           this.splice("annotations", annotationIndex, 1,data);
-          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+          this.annotations.sort((a,b)=>a.fragment.currentTime-b.fragment.currentTime);
         });
         layerState.addEventListener("delete_annotation",({detail:{id}}) => {
           const annotationIndex=this.annotations.findIndex(annotation => annotation._id===id);

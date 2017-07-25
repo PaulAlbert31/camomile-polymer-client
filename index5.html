@@ -19,17 +19,18 @@
   <link rel="import" href="camomile-login.html">
   <link rel="import" href="camomile-corpus-select.html">
   <link rel="import" href="camomile-medium-select.html">
-  <link rel="import" href="camomile-touch-player.html">
+  <link rel="import" href="camomile-player.html">
+  <link rel="import" href="camomile-draw.html">
   <link rel="import" href="camomile-corpus-create.html">
   <link rel="import" href="camomile-medium-create.html">
   <link rel="import" href="camomile-layer-select.html">
   <link rel="import" href="camomile-layer-create.html">
   <link rel="import" href="camomile-medium-view.html">
+  <link rel='import' href='camomile-touch-player.html'>
   <link rel="import" href="camomile-layer-state.html">
   <link rel='import' href='camomile-touch-action.html'>
   <link rel="import" href="camomile-segmentation-table-touch.html">
   <link rel='import' href='camomile-layer-state.html'>
-  <link rel="import" href="camomile-upload-face.html">
 
 
   <style>
@@ -53,7 +54,7 @@
           <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons show-on-large">menu</i></a>
         </div>
         <div class="col s11">
-          <a href='index3.html' class='brand-logo' ><img class='responsive-img' src="lib/videojs-touch.png"></a>
+          <a href='index2.html' class='brand-logo' ><img class='responsive-img' src="lib/videojs-touch.png"></a>
         </div>
         <div class="col s2 right">
           <a class='dropdown-button' href='#' data-activates='dropdown1'><i class="material-icons show-on-large">keyboard_arrow_down</i></a>
@@ -61,10 +62,10 @@
         <ul id="dropdown1" class='dropdown-content'>
           <li><a href='index.html' class='red-text text-lighten-2'>Annotation</a></li>
           <li><a href='index2.html' class='red-text text-lighten-2'>Visualisation table</a></li>
-          <li><a href='index5.html' class='red-text text-lighten-2'>Visualisation video</a></li>
           <li class="divider red lighten-2"></li>
-          <li><a href='index3.html' class='grey lighten-2 red-text text-lighten-2'>Upload</a></li>
+          <li><a href='index5.html' class='grey lighten-2 red-text text-lighten-2'>Visualisation video</a></li>
           <li class="divider red lighten-2"></li>
+          <li><a href='index3.html' class='red-text text-lighten-2'>Upload</a></li>
           <li><a href='index4.html' class='red-text text-lighten-2'>Download</a></li>
         </ul>
       </div>
@@ -76,36 +77,35 @@
         <div class="col s12">
           <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
         </div>
+          <div class='col s12'>
+            <li><camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select></li>
+          </div>
+          <div class='col s12'>
+            <li><camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select></li>
+          </div>
+          <div class='col s12'>
+            <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
+          </div>
       </div>
       </ul>
-  </div>
-</nav>
-
-
-  <div class="row" style='margin-top:5%'>
-    <ul>
-      <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
-        <div class='col s4'>
-          <li><camomile-corpus-select id="corpus1" src-login="user1"></camomile-corpus-select></li>
-        </div>
-        <div class="col s4">
-            <li><camomile-medium-select id="medium1" src-corpus="corpus1"></camomile-medium-select></li>
-        </div>
-        <div class='col s4'>
-          <li><camomile-layer-select id="layer1" src-corpus="corpus1"></camomile-layer-select></li>
-        </div>
-    </ul>
-    <div class="col s12">
-      <camomile-upload-face id='download1' src-layerstate='layerState1'></camomile-upload-face>
     </div>
-  </div>
+  </nav>
+
+    <div class='row'>
+
+      <div class="row">
+        <div class="col s12">
+          <camomile-draw id="draw1" src-layerstate="layerState1" src-player='player1'></camomile-draw>
+          <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
+          <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
+          <camomile-touch-player id="player1" sync-all="mediumView1"></camomile-touch-player>
+        </div>
+      </div>
+    </div>
 
   <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
   <script type='text/javascript'>
-  document.ontouchmove = function(event){
-    event.preventDefault();
-  }
   $(document).ready(function() {
     $(".button-collapse").sideNav({
       menuWidth: 350

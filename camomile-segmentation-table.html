@@ -33,6 +33,7 @@
         layerState.addEventListener("populate_annotations",({detail:{data}}) => {
           this.annotations=JSON.parse(JSON.stringify(data));
           this.annotations.sort((a,b) => a.fragment.start - b.fragment.start);
+          console.log(this.annotations.length);
         });
         layerState.addEventListener("reset_annotations",() => {
           this.annotations=null;

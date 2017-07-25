@@ -76,7 +76,7 @@
         this.layerInstance = layerInstance;
         this.client = layerInstance.client;
         this.layer=layerInstance.layer;
-        this.fragment_type=layerInstance.fragment_type;
+        this.fragment_type=this.client.getLayer(this.layer).fragment_type
         if(this.medium)
           this._populateAnnotations(this.layer,this.medium);
 
@@ -137,7 +137,7 @@
       _populateAnnotations(layer,medium) {
         this.client.getAnnotations({filter:{id_layer:layer,id_medium:medium}})
           .then(data => {
-            console.log("annotations",data);
+            // console.log("annotations",data);
             this.annotations=data;
             this.populated=true;
             this.dispatchEvent(new CustomEvent("populate_annotations",{detail:{data}}));
