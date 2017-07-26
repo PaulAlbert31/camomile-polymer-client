@@ -12,10 +12,6 @@
     <style include='materialize'>
 
     </style>
-    <div id="videoControls" style='position:relative;top:25px'>
-    <button type="button" id="play-pause">Play/Pause</button>
-    <input type="range" id="seek-bar" value="0">
-  </div>
   </template>
 
   <script>
@@ -104,8 +100,6 @@
             this.removeEventListener('play',first())
           })
           videoElement.addEventListener('timeupdate',() => {
-            var value = (100/videoElement.duration)*videoElement.currentTime;
-            draw.$.videoControls.children[1].value=value;
             if((this.previousTime-this.player.video.currentTime)>0){
               for (let j = 0; j<=i;j++){
                 if(this.annotations[i-j].fragment.startTime>this.player.video.currentTime){
@@ -172,10 +166,9 @@
               u = this.rect.length;
               this.rect.push(drawingBoard.polygon([0,0],[0,100],[100,100],[100,0]).fill('none').stroke({color:draw.colors[u%10]}));
               this.rect[u].delay();
-              console.log(this.rect);
+              console.log('Nombre de rectangles : ',this.rect.length);
             }
           }
-          console.log('update',u);
 
           const wait = Math.round((draw.annotations[i].fragment.startTime-draw.player.video.currentTime)*1000)
           var rect = this.rect[u];
@@ -193,9 +186,6 @@
                 }
               }
               rect = rect.stroke({width:0});
-            }
-            else {
-              console.log('changement de temps ?');
             }
             },wait)
           }
@@ -236,22 +226,7 @@
               this.splice("annotations", annotationIndex, 1);
             });
 
-            this.$.videoControls.children[1].addEventListener('change',function(){
-              var time = videoElement.duration * this.value/100;
-              videoElement.currentTime=time;
-            })
-            this.$.videoControls.children[0].addEventListener('click',function(){
-              if (videoElement.paused) {
-                videoElement.play();
-                for (let i = 0; i<rect.length;i++){
-                  rect[i].play();
-                }
-              }else {
-                videoElement.pause();
-                for (let i = 0; i<rect.length;i++){
-                  rect[i].pause();
-                }
-              }})
+
             this.player.on('doubletap',function(){
               if (videoElement.paused) {
                 videoElement.play();
