@@ -10,14 +10,15 @@
 <dom-module id="camomile-touch-player">
 
   <template>
-  <style include='materialize'></style>
-  <span class='hide-on-large-only text-darken-2'><blockquote>Rotate to get maxium video size</blockquote></span>
+
+  <span><blockquote>Rotate to get maxium video size</blockquote></span>
   <video id="video" width=100%>
     <source src="{{medium_url}}" type="video/{{format}}">
     </video>
     <div id='wrapper'></div>
-    <div id="videoControls" style='position:relative;top:5%;z-index:6'>
-    <input type="range" id="seek-bar" class='display-value' value="0">
+
+    <div id="videoControls" style='position:relative;top:10px;z-index:6'>
+    <input type="range" id="seek-bar" style="width:100%;" value="0" min=0>
   </div>
   </template>
 
