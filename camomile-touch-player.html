@@ -5,7 +5,7 @@
 <link rel="import" href="materialize.html">
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
-
+<script type="text/javascript" src="https://cdn.rawgit.com/nelsonic/range-touch/master/range-touch.min.js"></script>
 
 <dom-module id="camomile-touch-player">
 
@@ -50,7 +50,6 @@
 
       var videoElement=this.video;
       if(videoElement.parentNode.id==undefined){
-        console.log(this.$.videoControls.children[0]);
         this.$.videoControls.children[0].addEventListener('change',function(){
           var time = videoElement.duration * this.value/100;
           videoElement.currentTime=time;
