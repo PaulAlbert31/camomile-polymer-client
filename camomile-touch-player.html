@@ -11,13 +11,12 @@
 
   <template>
 
-  <span><blockquote>Rotate to get maxium video size</blockquote></span>
-  <video id="video" width=100%>
-    <source src="{{medium_url}}" type="video/{{format}}">
+  <video id="video">
+    <source src="{{medium_url}}" type="video/{{format}}" crossOrigin='use-credentials'>
     </video>
     <div id='wrapper'></div>
 
-    <div id="videoControls" style='position:relative;top:10px;z-index:6'>
+    <div id="videoControls" style='position:relative;z-index:6'>
     <input type="range" id="seek-bar" style="width:100%;" value="0" min=0>
   </div>
   </template>
@@ -59,6 +58,7 @@
 
 
         var wrapper = this.$.wrapper;
+        this.wrapper = wrapper;
 
         wrapper.id = 'interactivePlayer';
         wrapper.class='col s12';
@@ -78,10 +78,10 @@
         // touchLayer.appendChild(videoElement);
         wrapper.appendChild(touchLayer);
         wrapper.appendChild(videoElement);
-        this.$.wrapper.style.cssText='top:10px;z-index:1;position:relative;height:100%;width: 100%;display: inline-block';
+        this.$.wrapper.style.cssText='top:10px;z-index:1;position:relative;height:100%;display: inline-block';
         this.$.wrapper.style.paddingBottom=100*videoElement.videoHeight/videoElement.videoWidth+'%';
-        this.$.wrapper.firstChild.style.cssText='position:absolute;height:100%;width:100%; z-index:3;display: inline-block';
-        this.$.wrapper.lastChild.style.cssText='position:absolute;height:100%;width:100%;z-index:1;display: inline-block';
+        this.$.wrapper.firstChild.style.cssText='position:absolute;height:100%; z-index:3;display: inline-block';
+        this.$.wrapper.lastChild.style.cssText='position:absolute;height:100%;z-index:1;display: inline-block';
         this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
         // add Hammer to touch overlay
         var hammer = new Hammer.Manager(touchLayer);
