@@ -1,0 +1,77 @@
+
+<dom-module id='autocomplete'>
+<template>
+<style>
+@import "compass/css3";
+
+// imports
+@import "compass/reset";
+@import "compass/css3/selection";
+@import url(https://fonts.googleapis.com/css?family=Roboto+Slab);
+
+// colors
+$grad-one: #ADADEB;
+$grad-two: #6B8FB2;
+$grad-three: #669999;
+$color: #FFFFFF;
+$border-color: 2px solid rgba(255, 255, 255, .6);
+$focus-overlay: rgba(0, 0, 0, 0.1);
+
+// selectors
+html, body {
+  @include background-image(-svg(linear-gradient(120deg, $grad-one, $grad-two, $grad-three)));
+  @include selection(darken($grad-two, 50%));
+
+  height: 100%;
+  width: 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  font-family: 'Roboto Slab';
+}
+
+#autocomplete-container {
+  width: 300px;
+  margin: 50px auto;
+
+  #autocomplete-input {
+    @include background(rgba(0, 0, 0, 0));
+    @include input-placeholder {
+      color: $color;
+    };
+    @include appearance(none);
+
+    &:focus {
+    @include background($focus-overlay);
+  }
+
+    width: 100%;
+    padding: 20px 15px;
+    border: $border-color;
+    outline: none;
+    color: $color;
+    font-size: 20px;
+  }
+}
+
+#autocomplete-results {
+  display: none;
+  width: 100%;
+  margin-top: -2px;
+  color: $color;
+
+  li {
+    width: 100%;
+    padding: 20px 15px;
+    border-right: $border-color;
+    border-bottom: $border-color;
+    border-left: $border-color;
+
+    &:hover {
+      @include background($focus-overlay);
+    }
+  }
+}
+</style>
+</template>
+</dom-module>

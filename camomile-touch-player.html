@@ -15,9 +15,8 @@
     <source src="{{medium_url}}" type="video/{{format}}" crossOrigin='use-credentials'>
     </video>
     <div id='wrapper'></div>
-
-    <div id="videoControls" style='position:relative;z-index:6'>
-    <input type="range" id="seek-bar" style="width:100%;" value="0" min=0>
+    <div id="videoControls" style='position:relative;z-index:2'>
+    <input type="range" id="seek-bar" value="0" min=0 max=1000>
   </div>
   </template>
 
@@ -51,7 +50,7 @@
       var videoElement=this.video;
       if(videoElement.parentNode.id==undefined){
         this.$.videoControls.children[0].addEventListener('change',function(){
-          var time = videoElement.duration * this.value/100;
+          var time = videoElement.duration * this.value/1000;
           videoElement.currentTime=time;
         })
 
@@ -80,9 +79,10 @@
         wrapper.appendChild(videoElement);
         this.$.wrapper.style.cssText='top:10px;z-index:1;position:relative;height:100%;display: inline-block';
         this.$.wrapper.style.paddingBottom=100*videoElement.videoHeight/videoElement.videoWidth+'%';
-        this.$.wrapper.firstChild.style.cssText='position:absolute;height:100%; z-index:3;display: inline-block';
-        this.$.wrapper.lastChild.style.cssText='position:absolute;height:100%;z-index:1;display: inline-block';
-        this.draw=SVG(touchLayer).size(videoElement.videoWidth,videoElement.videoHeight);
+        touchLayer.style.cssText='position:absolute;height:100%; z-index:3;display: inline-block';
+        videoElement.style.cssText='position:absolute;height:100%;z-index:1;display: inline-block';
+        this.draw=SVG(touchLayer).size(videoElement.clientWidth,videoElement.clientHeight);
+
         // add Hammer to touch overlay
         var hammer = new Hammer.Manager(touchLayer);
         // Tap recognizer with minimal 2 taps
@@ -148,7 +148,7 @@
           syncCurrentTime=syncAll;
           syncPlaying=syncAll;
           videoElement.addEventListener('timeupdate',() => {
-            var value = (100/videoElement.duration)*videoElement.currentTime;
+            var value = (1000/videoElement.duration)*videoElement.currentTime;
             this.$.videoControls.children[0].value=value;
           })
         }
