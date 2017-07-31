@@ -2,18 +2,19 @@
 <link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
 <script src="getElementAt.js"></script>
 <link rel="import" href="materialize.html">
+<link rel="import" href="autocomplete.html">
+<script src="node_modules/svgjs/dist/svg.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
-<script src="node_modules/svgjs/dist/svg.min.js"></script>
 
 
 <dom-module id="camomile-draw">
   <template>
-  <style include='materialize'>
+  <style include='materialize autocomplete'>
   </style>
-  <a class="btn-floating btn-large waves-effect waves-light red" style='display:inline-block;top:-5%' id='addButton'><i class="material-icons">add</i></a>
-  <div id='container' class = 'row' style='display:inline-block;overflow:scroll;width:100%;height:100%'><div id='miniatures' class='col s12' style='display:inline-block;width:auto;height:100px'></div></div>
-  <a class="btn waves-effect waves-light red" style='display:inline-block;top:-5%' id='pushButton'><i class="material-icons">backup</i>Push your identification</a>
+  <a class="btn-floating btn-large waves-effect waves-light red" id='addButton'><i class="material-icons">add</i></a>
+  <div id='container' class = 'row' style='overflow:scroll;width:100%;height:100%'><div id='miniatures' class='col s12' style='width:auto;height:200px'></div></div>
+  <a class="btn waves-effect waves-light red" id='pushButton'><i class="material-icons">backup</i>Push your identification</a>
 
 </template>
 
@@ -29,6 +30,41 @@ class CamomileDraw extends Polymer.Element {
 
   _setupLayer(camomileLayerState){
     this.layerState=camomileLayerState;
+    this.faceAnnotations={};
+    const miniatures = this.$.container.children[0];
+    this.layerState.client.getLayerMetadata(this.layerState.layer,'level2').then(result=>{
+      const keys = Object.keys(result.metadata_array);
+      var specialDiv = document.createElement('div');
+      var form = document.createElement('form');
+      var canvas1 = document.createElement('canvas');
+      var canvastx1 = canvas1.getContext('2d');
+      var inputLabel = document.createElement('a');
+      var inputSubmit = document.createElement('input');
+      for (let i = 0; i<keys.length;i++){
+        this.faceAnnotations[keys[i]] = {'coord':result.metadata_array[keys[i]].coord,'face':result.metadata_array[keys[i]].face}
+        specialDiv = document.createElement('div');
+        specialDiv.style.cssText = 'position:relative;display:inline-block;';
+        form = document.createElement('form');
+        form.style.cssText='width:70px'
+        canvas1 = document.createElement('canvas');
+        canvas1.height = 40;
+        canvas1.width = 1.4 * canvas1.height;
+        canvastx1 = canvas1.getContext('2d');
+        // canvastx1.putImageData(result.metadata_array[keys[i]].face,0,0);
+        inputLabel = document.createElement('a');
+        inputLabel.innerHTML = keys[i];
+        inputLabel.style.cssText = 'position:relative;width:70px';
+        inputLabel.className ='truncate black-text';
+        inputSubmit = document.createElement('input');
+        inputSubmit.style.cssText='position:absolute;left:-9999px'
+        inputSubmit.type = 'submit';
+        miniatures.appendChild(specialDiv);
+        specialDiv.appendChild(canvas1);
+        specialDiv.appendChild(form);
+        form.appendChild(inputLabel);
+        form.appendChild(inputSubmit);
+      }
+    })
     if (this.player) {
       if (this.player.wrapped){
         this.setFunctions();
@@ -40,7 +76,6 @@ class CamomileDraw extends Polymer.Element {
       this.player=camomilePlayer;
       this.player.$.videoControls.children[0].style.width='100%';
       const videoElement = this.player.video;
-      this.faceAnnotations={};
       this.player.draw.size(videoElement.clientWidth,videoElement.clientHeight)
       if(this.layerState){
         if(this.layerState.populated&&this.player.wrapped){
@@ -77,15 +112,16 @@ class CamomileDraw extends Polymer.Element {
       var delay = 0;
       const draw = this
       const videoElement = this.player.video;
-      var i = 0;
 
       this.annotations=JSON.parse(JSON.stringify(data));
       var annotations=this.annotations;
       for (let i=0;i<annotations.length;i++){
-        annotations[i].data=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].data))
-        annotations[i].fragment=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].fragment))
-        annotations[i].toBeResolved=true;
+          annotations[i].data=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].data))
+          annotations[i].fragment=JSON.parse(LZString.decompressFromEncodedURIComponent(annotations[i].fragment))
+          annotations[i].toBeResolved=true;
+
       }
+      var i = 0;
       this.annotations.sort((a,b)=>a.data.track_id-b.data.track_id);
       videoElement.addEventListener('timeupdate',() => {
         if((this.previousTime-this.player.video.currentTime)>0){
@@ -121,7 +157,7 @@ class CamomileDraw extends Polymer.Element {
             else{
               i=i+j;
               for (let j=0;j<draw.rect.length;j++){
-                draw.rect[j].stop(true,true);
+                draw.rect[j].stop();
                 draw.rect[j].stroke({width:0})
               }
               console.log('Went up to ',i,' with startTime', this.annotations[i].fragment.startTime,' currentTime is', this.player.video.currentTime)
@@ -139,13 +175,8 @@ class CamomileDraw extends Polymer.Element {
       })
     }
     updateMetadata(){
-      if (!this.faceAnnotations=={}){
-        this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level1':{'metadata_array':this.faceAnnotations}}).then(result=>{console.log(result);
-
-        })
-      }
-      this.layerState.client.getLayerMetadata(this.layerState.layer,'level1').then(result=>{console.log(result);})
-
+      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level2':{'metadata_array':this.faceAnnotations}})
+      .then(result=>{alert('Your annotations have been successfully pushed on the server');console.log(result);});
     }
 
     _updateSVG(i){
@@ -225,34 +256,80 @@ class CamomileDraw extends Polymer.Element {
         const sourceWidth = Math.round(rect.width()*ratioWidth);
         const sourceHeight = Math.round(rect.height()*ratioHeight);
         var specialDiv = document.createElement('div');
-        specialDiv.style.cssText = 'display:inline-block';
         var form = document.createElement('form');
-        form.style.cssText='width:70px'
+        form.style.cssText='width:70px;height:43px'
+        specialDiv.style.cssText='display:inline-block;';
         var canvas1 = document.createElement('canvas');
-        canvas1.height = 50
+        canvas1.height = 40;
         canvas1.width = 1.4 * canvas1.height;
-        specialDiv.style.cssText = 'display:inline-block;';
         var inputField = document.createElement('input');
-        // var inputLabel = document.createElement('i');
-        // inputLabel.className = 'material-icons prefix';
-        // inputLabel.innerHTML = 'account_circle';
-        // inputLabel.style.cssText = 'display:inline-block;width:20px'
         inputField.placeholder = 'Name';
-        inputField.style.cssText = 'position:relative;display:inline-block;width:70px';
+        inputField.style.cssText = 'position:relative;width:70px;background:transparent;z-index:30';
         inputField.type = 'text';
+        inputField.autofocus='true';
         var inputSubmit = document.createElement('input');
         inputSubmit.style.cssText='position:absolute;left:-9999px'
         inputSubmit.type = 'submit';
+        var autocomplete_results=document.createElement('a');
+        autocomplete_results.className = 'truncate grey-text';
         miniatures.appendChild(specialDiv);
         specialDiv.appendChild(canvas1);
         specialDiv.appendChild(form);
         form.appendChild(inputField);
         form.appendChild(inputSubmit);
+        form.appendChild(autocomplete_results)
+        autocomplete_results.style.cssText = 'z-index:1;position:relative;width:70px;top:-52px';
+        var data = [];
+        for(let i = 0; i<miniatures.children.length;i++){
+          if(miniatures.children[i].children[1].children[0].nodeName=='A')
+          data.push(miniatures.children[i].children[1].children[0].innerHTML);
+        }
+        // variables
+        var results;
+
+        // functions
+        function autocomplete(val) {
+          var data_return = [];
+
+          for (let i = 0; i < data.length; i++) {
+            if (val === data[i].slice(0, val.length)) {
+              data_return.push(data[i]);
+              break;
+            }
+          }
+
+          return data_return;
+        }
+        // events
+        inputField.onkeyup = function(e) {
+          var input_val = this.value; // updates the variable on each ocurrence
+
+          if (input_val.length > 0) {
+            var data_to_show = [];
+
+            autocomplete_results.innerHTML = '';
+            data_to_show = autocomplete(input_val);
+
+            autocomplete_results.innerHTML = data_to_show;
+
+
+            autocomplete_results.style.display = 'block';
+          } else {
+            data_to_show = []
+            autocomplete_results.innerHTML = '';
+          }
+        }
+
         form.onsubmit = function(e){
           e.preventDefault();
           var label = document.createElement('a');
-          label.innerHTML = inputField.value;
-          label.className = 'truncate center black-text';
+          var result=autocomplete_results.innerHTML;
+          if(!result==''){
+            inputField.value = result;
+          }
+          label.innerHTML=inputField.value;
+          label.className = 'truncate black-text';
+          autocomplete_results.innerHTML='';
           //Canvas capture failed : if the input is empty on submit, the div is deleted
           if(inputField.value == ''){
             this.parentNode.parentNode.removeChild(this.parentNode);
@@ -260,10 +337,12 @@ class CamomileDraw extends Polymer.Element {
             rect.stroke({width:0});
           }else{
             if (draw.faceAnnotations[inputField.value] === undefined){
-              draw.faceAnnotations[inputField.value] = [rect.id()];
+              draw.faceAnnotations[inputField.value]={'coord':[],'face':''};
+              draw.faceAnnotations[inputField.value].coord = [rect.id()];
             }else{
-              draw.faceAnnotations[inputField.value] = draw.faceAnnotations[inputField.value].concat([rect.id()]);
+              draw.faceAnnotations[inputField.value].coord = draw.faceAnnotations[inputField.value].coord.concat([rect.id()]);
             }
+            // draw.faceAnnotations[inputField.value].face = canvastx1.getImageData(0,0,canvas1.width,canvas1.height);
             for (let j=0;j<miniatures.children.length;j++){
               //Should not replace itself
               if (miniatures.children[j].children[1] === this && miniatures.children.length>j+1){
@@ -278,12 +357,28 @@ class CamomileDraw extends Polymer.Element {
               //No match was found, a new character is created
               if (j==miniatures.children.length-1){
                 this.replaceChild(label,inputField)
+                this.removeChild(autocomplete_results)
               }
             }
           }
+          for (let i =0; i<miniatures.children.length;i++){
+            if (miniatures.children[i].children[1].children[0].nodeName == "INPUT" ){
+              break;
+            }
+            if (i == miniatures.children.length-1){
+              var rects = draw.rect;
+              videoElement.play();
+              for (let j = 0; j<rects.length;j++){
+                if(rects[j].fx.active){
+                  rects[j].play();
+                }
+            }
+          }
+        }
         }
         var canvastx1 = canvas1.getContext('2d');
-        canvastx1.drawImage(videoElement,sourceX,sourceY,sourceWidth,sourceHeight,0,0,canvas1.width*0.95,canvas1.height*0.95);
+        canvastx1.drawImage(videoElement,sourceX,sourceY,sourceWidth,sourceHeight,0.05*canvas1.width,0.05*canvas1.height,canvas1.width*0.95,canvas1.height*0.95);
+
       }
 
 
@@ -331,17 +426,17 @@ class CamomileDraw extends Polymer.Element {
             videoElement.play();
             for (let i = 0; i<rect.length;i++){
               if(rect[i].fx.active){
-              rect[i].play();
-            }
+                rect[i].play();
+              }
             }
           }else {
             videoElement.pause();
             this.player.draw.size(videoElement.clientWidth,videoElement.clientHeight)
             for (let i = 0; i<rect.length;i++){
               if(rect[i].fx.active){
-              rect[i].pause();
+                rect[i].pause();
+              }
             }
-          }
           }})
 
         }
@@ -359,5 +454,6 @@ class CamomileDraw extends Polymer.Element {
       }
       customElements.define(CamomileDraw.is, CamomileDraw);
       </script>
+
 
     </dom-module>
