@@ -13,7 +13,7 @@
   <style include='materialize autocomplete'>
   </style>
   <a class="btn-floating btn-large waves-effect waves-light red" id='addButton'><i class="material-icons">add</i></a>
-  <div id='container' class = 'row' style='overflow:scroll;width:100%;height:100%'><div id='miniatures' class='col s12' style='width:auto;height:200px'></div></div>
+  <div id='container' class = 'row' style='overflow:scroll;width:100%;height:100%'><div id='miniatures' class='col s12' style='width:auto;height:100px'></div></div>
   <a class="btn waves-effect waves-light red" id='pushButton'><i class="material-icons">backup</i>Push your identification</a>
 
 </template>
@@ -32,7 +32,7 @@ class CamomileDraw extends Polymer.Element {
     this.layerState=camomileLayerState;
     this.faceAnnotations={};
     const miniatures = this.$.container.children[0];
-    this.layerState.client.getLayerMetadata(this.layerState.layer,'level2').then(result=>{
+    this.layerState.client.getLayerMetadata(this.layerState.layer,'level1').then(result=>{
       const keys = Object.keys(result.metadata_array);
       var specialDiv = document.createElement('div');
       var form = document.createElement('form');
@@ -48,6 +48,7 @@ class CamomileDraw extends Polymer.Element {
         form.style.cssText='width:70px'
         canvas1 = document.createElement('canvas');
         canvas1.height = 40;
+        canvas1.addEventListener('click',function(e){if(e.detail === 3){this.parentNode.parentNode.removeChild(this.parentNode)}})
         canvas1.width = 1.4 * canvas1.height;
         canvastx1 = canvas1.getContext('2d');
         // canvastx1.putImageData(result.metadata_array[keys[i]].face,0,0);
@@ -175,7 +176,8 @@ class CamomileDraw extends Polymer.Element {
       })
     }
     updateMetadata(){
-      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level2':{'metadata_array':this.faceAnnotations}})
+      // this.layerState.client.deleteLayerMetadata(this.layerState.layer,'level1');
+      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level1':{'metadata_array':this.faceAnnotations}})
       .then(result=>{alert('Your annotations have been successfully pushed on the server');console.log(result);});
     }
 
@@ -238,10 +240,21 @@ class CamomileDraw extends Polymer.Element {
 
       addButton(){
         this.player.video.pause();
+        var atLeastOne = true;
         for (let j = 0; j<this.rect.length;j++){
           if(this.rect[j].fx.active){
+            atLeastOne = false;
             this._getMin(this.rect[j])
             this.rect[j].pause()
+          }
+        }
+        if(atLeastOne){
+          this.player.video.play()
+          for (let j = 0; j<this.rect.length;j++){
+            if(this.rect[j].fx.active){
+              this._getMin(this.rect[j])
+              this.rect[j].pause()
+            }
           }
         }
       }
@@ -263,6 +276,7 @@ class CamomileDraw extends Polymer.Element {
         canvas1.height = 40;
         canvas1.width = 1.4 * canvas1.height;
         var inputField = document.createElement('input');
+        canvas1.addEventListener('dblclick',function(){this.parentNode.parentNode.removeChild(this.parentNode)})
         inputField.placeholder = 'Name';
         inputField.style.cssText = 'position:relative;width:70px;background:transparent;z-index:30';
         inputField.type = 'text';
@@ -278,6 +292,7 @@ class CamomileDraw extends Polymer.Element {
         form.appendChild(inputField);
         form.appendChild(inputSubmit);
         form.appendChild(autocomplete_results)
+        inputField.focus();
         autocomplete_results.style.cssText = 'z-index:1;position:relative;width:70px;top:-52px';
         var data = [];
         for(let i = 0; i<miniatures.children.length;i++){
@@ -363,6 +378,7 @@ class CamomileDraw extends Polymer.Element {
           }
           for (let i =0; i<miniatures.children.length;i++){
             if (miniatures.children[i].children[1].children[0].nodeName == "INPUT" ){
+              miniatures.children[i].children[1].children[0].focus();
               break;
             }
             if (i == miniatures.children.length-1){
