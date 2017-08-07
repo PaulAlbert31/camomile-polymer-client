@@ -175,9 +175,9 @@ class CamomileDraw extends Polymer.Element {
         this.previousTime=this.player.video.currentTime;
       })
     }
-    updateMetadata(){
+    updateMetadata(path){
       // this.layerState.client.deleteLayerMetadata(this.layerState.layer,'level1');
-      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level1':{'metadata_array':this.faceAnnotations}})
+      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata', path:{'metadata_array':this.faceAnnotations}})
       .then(result=>{alert('Your annotations have been successfully pushed on the server');console.log(result);});
     }
 
@@ -235,7 +235,8 @@ class CamomileDraw extends Polymer.Element {
             this.rect[j].pause()
           }
         }
-        this.updateMetadata();
+        var path = 'faceAnnotations'; //Should evolve in the futur
+        this.updateMetadata(path);
       }
 
       addButton(){
