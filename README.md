@@ -71,14 +71,14 @@ The Camomile-touch-player element is also equipped with a SVG layer which you ca
 
 This component is used to allow users of the camomile project to download annotations to their computers. The generation of the file that will be downloaded on the client's computer is done on the client side. You can use this component by default, the downloaded file will be in the JSON format. However, you can inherit this element through the line ```class YourModifiedDownload extends CamomileDownload``` this will allow you to change the format of the file and the way the annotations are parsed.
 Don't forget to import the element camomile-download at the top of your document : ```<link rel="import" href="camomile-download.html">```.
-The main functions to rewrite are ```extention()``` that should return, as a string, the file extention (for example '.cam') and the ```format(annotations)``` function that parses the annotations from the server, returning the parsed annotations.
+The main functions to rewrite are ```_extention()``` that should return, as a string, the file extention (for example '.cam') and the ```_format(annotations)``` function that parses the annotations from the server, returning the parsed annotations.
 The element Camomile-download-cam is an example of what an inherited component should look like.
 
 ### Camomile-upload
 
 Much like the previous component, Camomile-upload allows the user to upload an annotation file to the server. Inherit from this component to parse the informations of the file correctly.
 ```class YourModifiedUpload extends CamomileUpload``` will extend the class provided you imported it earlier on : ```<link rel="import" href="camomile-upload.html">```.
-The function you should rewrite is ```fileAction(file)```. You can use camomile-upload-cam as an example on how it works. This function will be simplified in the futur to make it easier for the user.
+The function you should rewrite is ```_fileAction(file)```. You can use camomile-upload-cam as an example on how it works. This function will be simplified in the futur to make it easier for the user.
 
 ### Camomile-draw
 
