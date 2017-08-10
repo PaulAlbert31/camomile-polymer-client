@@ -16,6 +16,7 @@
       }
 
       _setupMedium(mediumInstance) {
+        this.mediumInstance = mediumInstance;
         this.medium=mediumInstance.medium;
         this.client=mediumInstance.client;
         this.medium_url = this.client.getMediumURL(mediumInstance.medium, this.format);

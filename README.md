@@ -83,4 +83,4 @@ The function you should rewrite is ```_fileAction(file)```. You can use camomile
 ### Camomile-draw
 
 This element allows us to draw rectangle around the head of the character appearing on the screen. It uses the "drawing broad" from the Camomile-touch-player to draw shapes. You could inherit from this document to create your own overlay on a video.
-The two main functions to rewrite would then be ```_popAnnos(data)``` and ```updateSVG(i)```. You can access the SVG overlay through ```this.player.draw```.
+The two main functions to rewrite would then be ```_popAnnos(data)``` and ```updateSVG(i)```. You can access the SVG overlay through ```this.player.draw``` attribute.

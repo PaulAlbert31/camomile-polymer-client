@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content='IE-Edge'/>
+  <!-- android -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <!-- iOS -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="translucent-black">
+  <meta name="apple-mobile-web-app-title" content="My App">
+  <meta name="format-detection" content="telephone=no" />
+  <link rel='stylesheet' type="text/css" href="./node_modules/materialize-css/dist/css/materialize.css">
+
+  <title>Camomile client polymer</title>
+  <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <link rel="import" href="camomile-endpoint.html">
+  <link rel="import" href="camomile-login.html">
+  <link rel="import" href="camomile-corpus-select.html">
+  <link rel="import" href="camomile-medium-select.html">
+  <link rel="import" href="camomile-layer-select.html">
+  <link rel="import" href="camomile-administration.html">
+  <link rel="import" href="camomile-medium-view.html">
+  <link rel='import' href='camomile-layer-state.html'>
+
+
+  <style>
+  body {
+    background-color:#eee;
+  }
+  nav ul li a:hover {
+   background-color: #f5f5f5;
+}
+  </style>
+</head>
+<noscript>
+  Activez javascript pour acceder à la page !
+</noscript>
+
+<body>
+  <nav class='hide-on-med-and-up'>
+    <div class="nav-wrapper">
+      <div class="row">
+        <div class="col s1">
+          <a href="#" data-activates="mobile-demo" class="button-collapse show-on-large"><i class="material-icons show-on-large">menu</i></a>
+        </div>
+        <div class="col s11">
+          <a href='indexAdministration.html' class='brand-logo' ><img class='responsive-img' src="lib/videojs-touch.png"></a>
+        </div>
+        <div class="col s2 right">
+          <a class='dropdown-button' href='#' data-activates='dropdown1'><i class="material-icons show-on-large">keyboard_arrow_down</i></a>
+        </div>
+        <ul id="dropdown1" class='dropdown-content'>
+          <li><a href='index.html' class='red-text text-lighten-2'>Annotation</a></li>
+          <li><a href='indexVisualisationTable.html' class='red-text text-lighten-2'>Visualisation table</a></li>
+          <li><a href='indexVisualisationVideo.html' class='red-text text-lighten-2'>Visualisation video</a></li>
+          <li><a href='indexUpload.html' class='red-text text-lighten-2'>Upload</a></li>
+          <li><a href='indexDownload.html' class='red-text text-lighten-2'>Download</a></li>
+          <li class="divider red lighten-2"></li>
+          <li><a href='indexAdministration.html' class='grey lighten-2 red-text text-lighten-2'>Administration</a></li>
+          <li class="divider red lighten-2"></li>
+        </ul>
+      </div>
+      <ul class="side-nav" id="mobile-demo">
+        <div class='row'>
+          <div class="col s12">
+          <li><camomile-endpoint  id="camomile1"></camomile-endpoint></li>
+        </div>
+        <div class="col s12">
+          <li><camomile-login  id="user1" src-endpoint="camomile1"></camomile-login></li>
+        </div>
+      </div>
+      </ul>
+    </div>
+  </nav>
+
+    <div class='row'>
+        <div class="col s12" >
+          <div class='col s6'>
+          <camomile-corpus-select id="corpus1" src-login="user1" style='position:relative;top:50px'></camomile-corpus-select>
+          </div>
+          <div class='col s6'>
+            <camomile-medium-select id="medium1" src-corpus="corpus1" style='position:relative;top:50px'></camomile-medium-select>
+          </div>
+          <div class='col s12'>
+            <camomile-layer-select id="layer1" src-corpus="corpus1" style='position:relative;top:50px'></camomile-layer-select>
+          </div>
+          <div class="col s12">
+            <camomile-administration id='administration1' src-corpus ='corpus1' src-mediumview='mediumView1' src-layerstate='layerState1' style='position:relative;top:50px'></camomile-administration>
+          </div>
+          <div class="col s12">
+            <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
+            <camomile-medium-view id="mediumView1" src-medium="medium1" format="mp4"></camomile-medium-view>
+          </div>
+        </div>
+    </div>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+  <script type='text/javascript'>
+  $(document).ontouchmove = function(e) {
+    e.preventDefault();
+};
+
+
+  $(document).ready(function() {
+    $(".button-collapse").sideNav({
+      menuWidth: 350
+    });
+    $('.dropdown-button').dropdown({
+     inDuration: 300,
+     outDuration: 225,
+     constrainWidth: false, // Does not change width of dropdown to that of the activator
+     hover: true, // Activate on hover
+     gutter: 0, // Spacing from edge
+     belowOrigin: false, // Displays dropdown below the button
+     alignment: 'left', // Displays dropdown with edge aligned to the left of button
+     stopPropagation: false // Stops event propagation
+   }
+ );
+  })
+  </script>
+
+</body>
+</html>
