@@ -32,8 +32,8 @@ class CamomileDraw extends Polymer.Element {
     this.layerState=camomileLayerState;
     this.faceAnnotations={};
     const miniatures = this.$.container.children[0];
-    this.layerState.client.getLayerMetadata(this.layerState.layer,'level1').then(result=>{
-      const keys = Object.keys(result.metadata_array);
+    this.layerState.client.getLayerMetadata(this.layerState.layer,'faceAnnotations').then(result=>{
+      const keys = Object.keys(result);
       var specialDiv = document.createElement('div');
       var form = document.createElement('form');
       var canvas1 = document.createElement('canvas');
@@ -41,7 +41,7 @@ class CamomileDraw extends Polymer.Element {
       var inputLabel = document.createElement('a');
       var inputSubmit = document.createElement('input');
       for (let i = 0; i<keys.length;i++){
-        this.faceAnnotations[keys[i]] = {'coord':result.metadata_array[keys[i]].coord,'face':result.metadata_array[keys[i]].face}
+        this.faceAnnotations[keys[i]] = {'coord':result[keys[i]].coord,'face':result[keys[i]].face}
         specialDiv = document.createElement('div');
         specialDiv.style.cssText = 'position:relative;display:inline-block;';
         form = document.createElement('form');
@@ -175,11 +175,16 @@ class CamomileDraw extends Polymer.Element {
         this.previousTime=this.player.video.currentTime;
       })
     }
-    updateMetadata(){
-      // this.layerState.client.deleteLayerMetadata(this.layerState.layer,'level1');
-      this.layerState.client.setLayerMetadata(this.layerState.layer,{'name':'face_metadata','level1':{'metadata_array':this.faceAnnotations}})
-      .then(result=>{alert('Your annotations have been successfully pushed on the server');console.log(result);});
+    updateMetadata(path){
+      const keys = Object.keys(this.faceAnnotations);
+      var relativePath = '';
+      for (let i=0;i<keys.length;i++){
+        relativePath = path + '.' + keys[i];
+        this.layerState.client.setLayerMetadata(this.layerState.layer,this.faceAnnotations[keys[i]],relativePath)
+        .then(result=>{console.log(result);})
     }
+    alert('Your annotations have been successfully pushed on the server');
+  }
 
     _updateSVG(i){
       // Automatic creation of rectangle if multiple faces
@@ -235,7 +240,7 @@ class CamomileDraw extends Polymer.Element {
             this.rect[j].pause()
           }
         }
-        this.updateMetadata();
+        this.updateMetadata('faceAnnotations');
       }
 
       addButton(){

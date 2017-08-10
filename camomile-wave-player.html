@@ -22,8 +22,9 @@
         this.loading=false;
         this.loaded=false;
       }
-      
+
       _setupMediumView(mediumView) {
+        console.log(mediumView.medium_url);
         this.wavesurfer.load(mediumView.medium_url);
         this.loading=true;
         this.wavesurfer.on("ready",() => {
@@ -34,7 +35,7 @@
           this.loadingProgress=loadingProgress;
         })
       }
-      
+
       _resetMediumView() {
         this.wavesurfer.empty();
         this.loading=false;

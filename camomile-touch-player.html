@@ -93,6 +93,7 @@
         hammer.add(new Hammer.Pan({event:'pan'}));
         // Pinch recognizer
         hammer.add(new Hammer.Pinch({event:'pinch'}))
+        // Add your own recognisers
 
         // we want to recognize this simulatenous, so a doubletap will be detected even while a tap has been recognized.
         hammer.get('doubletap').recognizeWith('singletap');
