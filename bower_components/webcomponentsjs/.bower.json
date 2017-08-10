@@ -28,12 +28,12 @@
     "template": "webcomponents/template#^v1.0.0",
     "webcomponents-platform": "webcomponents/webcomponents-platform#^v1.0.0"
   },
-  "version": "1.0.4",
-  "_release": "1.0.4",
+  "version": "1.0.7",
+  "_release": "1.0.7",
   "_resolution": {
     "type": "version",
-    "tag": "v1.0.4",
-    "commit": "f01672c05cca9ec5839b064d2f5e1da73f01ea10"
+    "tag": "v1.0.7",
+    "commit": "b260f034d2153014e16bb3503a4ddeba6979a537"
   },
   "_source": "https://github.com/webcomponents/webcomponentsjs.git",
   "_target": "^1.0.0-rc.7",
