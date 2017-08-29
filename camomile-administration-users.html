@@ -1,0 +1,199 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-administration.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-administration-users">
+  <template>
+    <style include="materialize"></style>
+    <div id='userDiv' style="position:relative;top:10px"></div>
+    <div id='userCreationDiv'></div>
+    <a class="btn" id="rightCorpus">Set rights to Corpus</a>
+    <br>
+    <label for="form2" id='userFormOri'></label>
+    <div id='userRightsDiv'></div>
+    <div id='formDiv2'></div>
+
+  </template>
+
+  <script>
+    class CamomileAdministrationUsers extends CamomileAdministration {
+      static get is() {
+        return "camomile-administration-users";
+      }
+
+      constructor() {
+        super();
+      }
+
+      _setupCorpus(corpusInstance) {
+        var draw = this;
+        try{
+        this.$.userDiv.removeChild(this.$.userDiv.children[0])
+        this.$.userRightsDiv.removeChild(this.$.userRightsDiv.children[0])
+      }catch(e){
+        console.log(e);
+      }
+        this.client = corpusInstance.client;
+        this.corpus = corpusInstance.corpus;
+        var userForm = document.createElement('form');
+        var userSelect = document.createElement('select');
+        userSelect.className = 'browser-default';
+        userForm.appendChild(userSelect)
+        this.$.userDiv.appendChild(userForm);
+        var basicOption = document.createElement('option');
+        basicOption.value = '';
+        basicOption.disabled = true;
+        basicOption.selected = true;
+        basicOption.innerHTML = "Select a user";
+        userSelect.appendChild(basicOption);
+        var newOption = '';
+        this.client.getUsers().then(users=>{
+          for(let i=0;i<users.length;i++){
+            newOption = document.createElement('option');
+            newOption.value = users[i]._id;
+            newOption.innerHTML = users[i].username;
+            userSelect.appendChild(newOption);
+          }
+        })
+        var deleteUserButton = document.createElement('a');
+        deleteUserButton.className = 'btn';
+        userForm.id='userForm';
+        deleteUserButton.addEventListener('click',() => {
+        this.client.deleteUser(userForm.children[0].value)
+        })
+        var addUserButton = document.createElement('a');
+        addUserButton.className = 'btn';
+        addUserButton.innerHTML = 'Add a user';
+        deleteUserButton.innerHTML = 'Delete a user';
+        userForm.appendChild(addUserButton);
+        var userRightsButton = document.createElement('a');
+        userRightsButton.className = 'btn';
+        userRightsButton.innerHTML = 'set user rights to layer';
+        userForm.appendChild(deleteUserButton);
+        userForm.appendChild(addUserButton);
+        userForm.appendChild(userRightsButton);
+        userRightsButton.addEventListener('click', () => {
+          if(this.$.userRightsDiv.children.length == 0 && userSelect.value != ''){
+          this.$.userFormOri.innerHTML = 'User right to layer';
+          var rightForm = document.createElement('form');
+          var rightSelectLayer = document.createElement('select');
+          var rightOptionRead = document.createElement('option');
+          var rightOptionWrite = document.createElement('option');
+          var rightOptionAdmin = document.createElement('option');
+          var rightOptionSubmit = document.createElement('input');
+          var rightFormCancel = document.createElement('button');
+          rightFormCancel.innerHTML = 'cancel';
+          rightForm.style.cssText = 'position:relative;top:15px'
+          rightOptionSubmit.type = 'submit';
+          rightSelectLayer.className = 'browser-default';
+          rightSelectLayer.appendChild(rightOptionRead);rightSelectLayer.appendChild(rightOptionWrite);rightSelectLayer.appendChild(rightOptionAdmin);
+          rightForm.appendChild(rightSelectLayer);rightForm.appendChild(rightOptionSubmit);
+          rightOptionRead.innerHTML = 'Read';rightOptionRead.value = '1';rightOptionRead.selected=true;
+          rightOptionWrite.innerHTML = 'Write';rightOptionWrite.value = '2';
+          rightOptionAdmin.innerHTML = 'Admin';rightOptionAdmin.value = '3';
+          this.$.userRightsDiv.appendChild(rightForm);
+          rightForm.appendChild(rightFormCancel);
+          rightFormCancel.addEventListener('click',() => {rightForm.parentNode.removeChild(rightForm);this.$.userFormOri.innerHTML= '';})
+          rightForm.onsubmit = function(e){
+            e.preventDefault();
+            if (userSelect.value != '' && draw.layerState.layer){
+              this.parentNode.removeChild(this);
+              draw.$.userFormOri.innerHTML = '';
+              draw.layerState.client.setLayerPermissions(draw.layerState.layer,rightSelectLayer.value,userSelect.value)
+            }
+          }
+        }
+        })
+        this.$.rightCorpus.addEventListener('click',()=>{
+          if(this.$.userRightsDiv.children.length == 0 && userSelect.value != ''){
+          this.$.userFormOri.innerHTML = 'User right to corpus';
+          var rightForm = document.createElement('form');
+          var rightSelectCorpus = document.createElement('select');
+          var rightOptionRead = document.createElement('option');
+          var rightOptionWrite = document.createElement('option');
+          var rightOptionAdmin = document.createElement('option');
+          var rightOptionSubmit = document.createElement('input');
+          var rightFormCancel = document.createElement('button');
+          rightFormCancel.innerHTML = 'cancel';
+          rightForm.style.cssText = 'position:relative;top:15px'
+          rightOptionSubmit.type = 'submit';
+          rightSelectCorpus.className = 'browser-default';
+          rightSelectCorpus.appendChild(rightOptionRead);rightSelectCorpus.appendChild(rightOptionWrite);rightSelectCorpus.appendChild(rightOptionAdmin);
+          rightForm.appendChild(rightSelectCorpus);rightForm.appendChild(rightOptionSubmit);
+          rightOptionRead.innerHTML = 'Read';rightOptionRead.value = '1';rightOptionRead.selected=true;
+          rightOptionWrite.innerHTML = 'Write';rightOptionWrite.value = '2';
+          rightOptionAdmin.innerHTML = 'Admin';rightOptionAdmin.value = '3';
+          this.$.userRightsDiv.appendChild(rightForm);
+          rightForm.appendChild(rightFormCancel);
+          rightFormCancel.addEventListener('click',() => {rightForm.parentNode.removeChild(rightForm);this.$.userFormOri.innerHTML= '';})
+          rightForm.onsubmit = function(e){
+            e.preventDefault();
+            if (userSelect.value != '' && draw.corpus){
+              this.parentNode.removeChild(this);
+              draw.$.userFormOri.innerHTML = '';
+              draw.layerState.client.setCorpusPermissions(draw.corpus,rightSelectCorpus.value,userSelect.value)
+            }
+          }
+        }
+        })
+        addUserButton.addEventListener('click', () => {
+          var userCreationForm = document.createElement('form');
+          var userCreationNameInput = document.createElement('input');
+          userCreationNameInput.id = "userCreationNameInput";
+          var userCreationNameLabel = document.createElement('label');
+          userCreationNameLabel.innerHTML = 'Name';
+          userCreationNameLabel.for = 'userCreationNameInput';
+          var userCreationPassword = document.createElement('input');
+          userCreationPassword.id='userCreationPassword';
+          var userCreationPasswordLabel = document.createElement('label');
+          userCreationPasswordLabel.innerHTML = 'Password';
+          userCreationPasswordLabel.for = 'userCreationPassword';
+          var userCreationDescription = document.createElement('input');
+          userCreationDescription.id = 'userCreationDescription';
+          var userCreationDescriptionLabel = document.createElement('label');
+          userCreationDescriptionLabel.innerHTML = 'User description';
+          userCreationDescriptionLabel.for = 'userCreationDescription';
+          var userCreationRole = document.createElement('select');
+          userCreationRole.className = 'browser-default';
+          userCreationRole.id = 'userCreationRole';
+          var userCreationRoleLabel = document.createElement('label');
+          userCreationRoleLabel.innerHTML = 'Role';
+          userCreationRoleLabel.for = 'userCreationRole';
+          var userCreationSubmit = document.createElement('input');
+          var roleAdmin = document.createElement('option');
+          var roleUser = document.createElement('option');
+          roleUser.innerHTML = 'User';
+          roleAdmin.innerHTML = 'Admin';
+          roleUser.value='user';
+          roleUser.selected = true;
+          roleAdmin.value='admin';
+          userCreationRole.appendChild(roleUser);userCreationRole.appendChild(roleAdmin);
+          userCreationSubmit.type = 'submit';
+          userCreationRole.placeholder = 'mandatory';
+          userCreationPassword.placeholder = 'mandatory';
+          userCreationNameInput.placeholder = 'mandatory';
+          userCreationForm.appendChild(userCreationNameLabel);userCreationForm.appendChild(userCreationNameInput);userCreationForm.appendChild(userCreationPasswordLabel);userCreationForm.appendChild(userCreationPassword);userCreationForm.appendChild(userCreationRoleLabel);userCreationForm.appendChild(userCreationRole);userCreationForm.appendChild(userCreationDescriptionLabel);userCreationForm.appendChild(userCreationDescription);userCreationForm.appendChild(userCreationSubmit);
+          this.$.userCreationDiv.appendChild(userCreationForm);
+          userCreationForm.onsubmit = function(e){
+            e.preventDefault();
+            if(userCreationPassword.value!="" && userCreationNameInput.value!=""){
+              draw.client.createUser(userCreationNameInput.value,userCreationPassword.value,userCreationDescription.value,userCreationRole.value);
+              this.parentNode.removeChild(this);
+            }
+          }
+        })
+        userForm.onsubmit=function(e){
+          e.preventDefault();
+        }
+      }
+
+    }
+    customElements.define(CamomileAdministrationUsers.is, CamomileAdministrationUsers);
+  </script>
+
+</dom-module>

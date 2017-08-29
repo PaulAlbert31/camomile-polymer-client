@@ -1,0 +1,81 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-administration.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-administration-corpus">
+  <template>
+    <style include="materialize"></style>
+    <a class="btn" id="deleteCorpus">Delete Corpus</a>
+    <a class="btn" id="createCorpus">Create Corpus</a>
+    <div id='formDiv'></div>
+  </template>
+
+  <script>
+    class CamomileAdministrationCorpus extends CamomileAdministration {
+      static get is() {
+        return "camomile-administration-corpus";
+      }
+
+
+      ready() {
+        const draw = this;
+        super.ready();
+        const camomileMedium=getElementAt(this.srcMediumview);
+        const camomileLayerState=getElementAt(this.srcLayerstate);
+        const camomileLogin=getElementAt(this.srcLogin);
+        const corpusInstance=getElementAt(this.srcCorpus);
+        if (camomileLayerState.populated){
+          this._setupLayer(camomileLayerState);
+        }
+        if(camomileMedium.medium) {
+          this._setupMediumView(camomileMedium);
+        }
+        if(corpusInstance.corpus)
+          this._setupCorpus(corpusInstance);
+        corpusInstance.addEventListener("select", () => this._setupCorpus(corpusInstance));
+        corpusInstance.addEventListener("deselect", () => this._resetCorpus());
+        camomileLayerState.addEventListener('populate_annotations',()=> this._setupLayer(camomileLayerState));
+        camomileLayerState.addEventListener('reset',()=>this._resetLayer())
+        camomileMedium.addEventListener("ready", () => this._setupMediumView(camomileMedium));
+        camomileMedium.addEventListener("reset", () => this._resetMediumView());
+        this.$.deleteCorpus.addEventListener('click',() => {this.client.deleteCorpus(camomileLayerState.corpus);});
+        this.$.createCorpus.addEventListener('click',() => {
+          var form = document.createElement('form');
+          this.$.formDiv.appendChild(form);
+          var submitButton = document.createElement('input');
+          submitButton.className = 'btn';
+          submitButton.type = 'submit';
+          submitButton.innerHTML = 'Submit';
+          var corpusName = document.createElement('input');
+          corpusName.placeholder = 'Mandatory';
+          corpusName.id = 'corpusName';
+          var labelName = document.createElement('label');
+          labelName.for = 'corpusName';
+          labelName.innerHTML='Name';
+          var corpusDescription = document.createElement('input');
+          corpusDescription.id='corpusDescription';
+          var labelDescription = document.createElement('label')
+          labelDescription.for = 'corpusDescription';
+          labelDescription.innerHTML = 'Description';
+          this.$.formDiv.appendChild(form);
+          form.onsubmit = function(e){
+            e.preventDefault();
+            if (corpusName.value != ''){
+            draw.client.createCorpus(corpusName.value,corpusDescription.value).then(result => {console.log(result);})
+            draw.$.formDiv.removeChild(this);
+          }
+        }
+          form.appendChild(labelName);form.appendChild(layerName);form.appendChild(labelDescription);form.appendChild(layerDescription);
+        })
+      }
+
+    }
+    customElements.define(CamomileAdministrationCorpus.is, CamomileAdministrationCorpus);
+  </script>
+
+</dom-module>

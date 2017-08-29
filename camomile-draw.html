@@ -4,6 +4,7 @@
 <link rel="import" href="materialize.html">
 <link rel="import" href="autocomplete.html">
 <script src="node_modules/svgjs/dist/svg.min.js"></script>
+<script type="text/javascript" src="./node_modules/lz-string/libs/lz-string.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
 
@@ -51,7 +52,7 @@ class CamomileDraw extends Polymer.Element {
         canvas1.addEventListener('click',function(e){if(e.detail === 3){this.parentNode.parentNode.removeChild(this.parentNode)}})
         canvas1.width = 1.4 * canvas1.height;
         canvastx1 = canvas1.getContext('2d');
-        // canvastx1.putImageData(result.metadata_array[keys[i]].face,0,0);
+        // canvastx1.putImageData(result.metadata_array[keys[i]].face,0,0); //Ici
         inputLabel = document.createElement('a');
         inputLabel.innerHTML = keys[i];
         inputLabel.style.cssText = 'position:relative;width:70px';
@@ -362,7 +363,8 @@ class CamomileDraw extends Polymer.Element {
             }else{
               draw.faceAnnotations[inputField.value].coord = draw.faceAnnotations[inputField.value].coord.concat([rect.id()]);
             }
-            // draw.faceAnnotations[inputField.value].face = canvastx1.getImageData(0,0,canvas1.width,canvas1.height);
+            draw.faceAnnotations[inputField.value].face = canvastx1.getImageData(0,0,canvas1.width,canvas1.height);
+
             for (let j=0;j<miniatures.children.length;j++){
               //Should not replace itself
               if (miniatures.children[j].children[1] === this && miniatures.children.length>j+1){

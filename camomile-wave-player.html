@@ -24,7 +24,6 @@
       }
 
       _setupMediumView(mediumView) {
-        console.log(mediumView.medium_url);
         this.wavesurfer.load(mediumView.medium_url);
         this.loading=true;
         this.wavesurfer.on("ready",() => {

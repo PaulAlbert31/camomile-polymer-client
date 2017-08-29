@@ -40,129 +40,13 @@
         var draw = this;
         this.client = corpusInstance.client;
         this.corpus = corpusInstance.corpus;
-        var userForm = document.createElement('form');
-        var userSelect = document.createElement('select');
-        userSelect.className = 'browser-default';
-        userForm.appendChild(userSelect)
-        this.$.userDiv.appendChild(userForm);
-        var basicOption = document.createElement('option');
-        basicOption.value = '';
-        basicOption.disabled = true;
-        basicOption.selected = true;
-        basicOption.innerHTML = "Select a user";
-        userSelect.appendChild(basicOption);
-        var newOption = '';
-        this.client.getUsers().then(users=>{
-          for(let i=0;i<users.length;i++){
-            newOption = document.createElement('option');
-            newOption.value = users[i]._id;
-            newOption.innerHTML = users[i].username;
-            userSelect.appendChild(newOption);
-          }
-        })
-        var deleteUserButton = document.createElement('a');
-        deleteUserButton.className = 'btn';
-        userForm.id='userForm';
-        deleteUserButton.addEventListener('click',() => {
-        this.client.deleteUser(userForm.children[0].value)
-        })
-        var addUserButton = document.createElement('a');
-        addUserButton.className = 'btn';
-        addUserButton.innerHTML = 'Add a user';
-        deleteUserButton.innerHTML = 'Delete a user';
-        userForm.appendChild(addUserButton);
-        var userRightsButton = document.createElement('a');
-        userRightsButton.className = 'btn';
-        userRightsButton.innerHTML = 'set user rights to layer';
-        userForm.appendChild(deleteUserButton);
-        userForm.appendChild(addUserButton);
-        userForm.appendChild(userRightsButton);
-        userRightsButton.addEventListener('click', () => {
-          if(this.$.userRightsDiv.children.length == 0 && userSelect.value != ''){
-          var rightForm = document.createElement('form');
-          var rightSelectLayer = document.createElement('select');
-          var rightOptionRead = document.createElement('option');
-          var rightOptionWrite = document.createElement('option');
-          var rightOptionAdmin = document.createElement('option');
-          var rightOptionSubmit = document.createElement('input');
-          var rightFormCancel = document.createElement('button');
-          rightFormCancel.innerHTML = 'cancel';
-          rightForm.style.cssText = 'position:relative;top:15px'
-          rightOptionSubmit.type = 'submit';
-          rightSelectLayer.className = 'browser-default';
-          rightSelectLayer.appendChild(rightOptionRead);rightSelectLayer.appendChild(rightOptionWrite);rightSelectLayer.appendChild(rightOptionAdmin);
-          rightForm.appendChild(rightSelectLayer);rightForm.appendChild(rightOptionSubmit);
-          rightOptionRead.innerHTML = 'Read';rightOptionRead.value = '1';rightOptionRead.selected=true;
-          rightOptionWrite.innerHTML = 'Write';rightOptionWrite.value = '2';
-          rightOptionAdmin.innerHTML = 'Admin';rightOptionAdmin.value = '3';
-          this.$.userRightsDiv.appendChild(rightForm);
-          rightForm.appendChild(rightFormCancel);
-          rightFormCancel.addEventListener('click',() => {rightForm.parentNode.removeChild(rightForm)})
-          rightForm.onsubmit = function(e){
-            e.preventDefault();
-            if (userSelect.value != '' && draw.layerState.layer){
-              console.log(draw.layerState.client.setLayerPermissions());
-              draw.layerState.client.setLayerPermissions(draw.layerState.layer,rightSelectLayer.value,userSelect.value)
-              this.parentNode.removeChild(this);
-            }
-          }
-        }
-        })
-        addUserButton.addEventListener('click', () => {
-          var userCreationForm = document.createElement('form');
-          var userCreationNameInput = document.createElement('input');
-          userCreationNameInput.id = "userCreationNameInput";
-          var userCreationNameLabel = document.createElement('label');
-          userCreationNameLabel.innerHTML = 'Name';
-          userCreationNameLabel.for = 'userCreationNameInput';
-          var userCreationPassword = document.createElement('input');
-          userCreationPassword.id='userCreationPassword';
-          var userCreationPasswordLabel = document.createElement('label');
-          userCreationPasswordLabel.innerHTML = 'Password';
-          userCreationPasswordLabel.for = 'userCreationPassword';
-          var userCreationDescription = document.createElement('input');
-          userCreationDescription.id = 'userCreationDescription';
-          var userCreationDescriptionLabel = document.createElement('label');
-          userCreationDescriptionLabel.innerHTML = 'User description';
-          userCreationDescriptionLabel.for = 'userCreationDescription';
-          var userCreationRole = document.createElement('select');
-          userCreationRole.className = 'browser-default';
-          userCreationRole.id = 'userCreationRole';
-          var userCreationRoleLabel = document.createElement('label');
-          userCreationRoleLabel.innerHTML = 'Role';
-          userCreationRoleLabel.for = 'userCreationRole';
-          var userCreationSubmit = document.createElement('input');
-          var roleAdmin = document.createElement('option');
-          var roleUser = document.createElement('option');
-          roleUser.innerHTML = 'User';
-          roleAdmin.innerHTML = 'Admin';
-          roleUser.value='user';
-          roleUser.selected = true;
-          roleAdmin.value='admin';
-          userCreationRole.appendChild(roleUser);userCreationRole.appendChild(roleAdmin);
-          userCreationSubmit.type = 'submit';
-          userCreationRole.placeholder = 'mandatory';
-          userCreationPassword.placeholder = 'mandatory';
-          userCreationNameInput.placeholder = 'mandatory';
-          userCreationForm.appendChild(userCreationNameLabel);userCreationForm.appendChild(userCreationNameInput);userCreationForm.appendChild(userCreationPasswordLabel);userCreationForm.appendChild(userCreationPassword);userCreationForm.appendChild(userCreationRoleLabel);userCreationForm.appendChild(userCreationRole);userCreationForm.appendChild(userCreationDescriptionLabel);userCreationForm.appendChild(userCreationDescription);userCreationForm.appendChild(userCreationSubmit);
-          this.$.userCreationDiv.appendChild(userCreationForm);
-          userCreationForm.onsubmit = function(e){
-            e.preventDefault();
-            if(userCreationPassword.value!="" && userCreationNameInput.value!=""){
-              draw.client.createUser(userCreationNameInput.value,userCreationPassword.value,userCreationDescription.value,userCreationRole.value);
-              this.parentNode.removeChild(this);
-            }
-          }
-        })
-        userForm.onsubmit=function(e){
-          e.preventDefault();
-        }
       }
 
       _resetCorpus() {
         this.client = null;
         this.corpus=null;
-        this.$.userForm.removeChild(this.$.userForm.children[0])
+        console.log('reset corpus');
+        this.$.userDiv.removeChild(this.$.userDiv.children[0])
       }
 
       _setupMediumView(mediumView) {
@@ -205,58 +89,6 @@
         camomileLayerState.addEventListener('reset',()=>this._resetLayer())
         camomileMedium.addEventListener("ready", () => this._setupMediumView(camomileMedium));
         camomileMedium.addEventListener("reset", () => this._resetMediumView());
-        this.$.deleteLayer.addEventListener('click',() => {this.client.deleteLayer(camomileLayerState.layer);});
-        this.$.deleteAnnotations.addEventListener('click',()=>{
-          this.client.getLayer(camomileLayerState.layer).then(result => {var layer = result;
-            var layerNameStr = layer.name;
-            var layerDataTypeStr = layer.data_type;
-            var layerFragmentTypeStr = layer.fragment_type;
-            var layerDescriptionStr = layer.description;
-            this.client.deleteLayer(camomileLayerState.layer);
-            this.client.createLayer(this.corpus,layerNameStr,layerDescriptionStr,layerFragmentTypeStr,layerDataTypeStr).then(result=>{
-              setCookie("layer",result,0);
-              this.layerState.layerInstance.$.layerForm.children[1].value = "";
-            })
-          });
-        })
-        this.$.createLayer.addEventListener('click',() => {
-          var form = document.createElement('form');
-          this.$.formDiv.appendChild(form);
-          var submitButton = document.createElement('input');
-          submitButton.className = 'btn';
-          submitButton.type = 'submit';
-          submitButton.innerHTML = 'Submit';
-          var layerName = document.createElement('input');
-          layerName.placeholder = 'Mandatory';
-          layerName.id = 'layerName';
-          var labelName = document.createElement('label');
-          labelName.for = 'layerName';
-          labelName.innerHTML='Name';
-          var layerDescription = document.createElement('input');
-          layerDescription.id='layerDescription';
-          var labelDescription = document.createElement('label')
-          labelDescription.for = 'layerDescription';
-          labelDescription.innerHTML = 'Description';
-          var layerFragmentType = document.createElement('input');
-          layerFragmentType.id = 'labelFragmentType';
-          var labelFragmentType = document.createElement('label');
-          labelFragmentType.for = 'labelFragmentType';
-          labelFragmentType.innerHTML = 'Fragment type';
-          var layerDataType = document.createElement('input');
-          layerDataType.id = 'layerDataType';
-          var labelDataType = document.createElement('label');
-          labelDataType.for = 'layerDataType';
-          labelDataType.innerHTML = 'Data type';
-          this.$.formDiv.appendChild(form);
-          form.onsubmit = function(e){
-            e.preventDefault();
-            if (layerName.value != ''){
-            draw.client.createLayer(draw.corpus,layerName.value,layerDescription.value,layerFragmentType.value,layerDataType.value).then(result => {console.log(result);})
-            draw.$.formDiv.removeChild(this);
-          }
-        }
-          form.appendChild(labelName);form.appendChild(layerName);form.appendChild(labelDescription);form.appendChild(layerDescription);form.appendChild(labelFragmentType);form.appendChild(layerFragmentType);form.appendChild(labelDataType);form.appendChild(layerDataType);form.appendChild(submitButton);
-        })
       }
 
 

@@ -1,0 +1,105 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-if.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-administration.html">
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-administration-layers">
+  <template>
+    <style include="materialize"></style>
+    <a class="btn" id="deleteLayer">Delete Layer</a>
+    <a class="btn" id="createLayer">Create Layer</a>
+    <a class="btn" id="deleteAnnotations">Delete Annotations</a>
+    <div id='formDiv'></div>
+  </template>
+
+  <script>
+    class CamomileAdministrationLayers extends CamomileAdministration {
+      static get is() {
+        return "camomile-administration-layers";
+      }
+
+
+      ready() {
+        const draw = this;
+        super.ready();
+        const camomileMedium=getElementAt(this.srcMediumview);
+        const camomileLayerState=getElementAt(this.srcLayerstate);
+        const camomileLogin=getElementAt(this.srcLogin);
+        const corpusInstance=getElementAt(this.srcCorpus);
+        if (camomileLayerState.populated){
+          this._setupLayer(camomileLayerState);
+        }
+        if(camomileMedium.medium) {
+          this._setupMediumView(camomileMedium);
+        }
+        if(corpusInstance.corpus)
+          this._setupCorpus(corpusInstance);
+        corpusInstance.addEventListener("select", () => this._setupCorpus(corpusInstance));
+        corpusInstance.addEventListener("deselect", () => this._resetCorpus());
+        camomileLayerState.addEventListener('populate_annotations',()=> this._setupLayer(camomileLayerState));
+        camomileLayerState.addEventListener('reset',()=>this._resetLayer())
+        camomileMedium.addEventListener("ready", () => this._setupMediumView(camomileMedium));
+        camomileMedium.addEventListener("reset", () => this._resetMediumView());
+        this.$.deleteLayer.addEventListener('click',() => {this.client.deleteLayer(camomileLayerState.layer);});
+        this.$.deleteAnnotations.addEventListener('click',()=>{
+          this.client.getLayer(camomileLayerState.layer).then(result => {var layer = result;
+            var layerNameStr = layer.name;
+            var layerDataTypeStr = layer.data_type;
+            var layerFragmentTypeStr = layer.fragment_type;
+            var layerDescriptionStr = layer.description;
+            this.client.deleteLayer(camomileLayerState.layer);
+            this.client.createLayer(this.corpus,layerNameStr,layerDescriptionStr,layerFragmentTypeStr,layerDataTypeStr).then(result=>{
+              setCookie("layer",result,0);
+              this.layerState.layerInstance.$.layerForm.children[1].value = "";
+            })
+          });
+        })
+        this.$.createLayer.addEventListener('click',() => {
+          var form = document.createElement('form');
+          this.$.formDiv.appendChild(form);
+          var submitButton = document.createElement('input');
+          submitButton.className = 'btn';
+          submitButton.type = 'submit';
+          submitButton.innerHTML = 'Submit';
+          var layerName = document.createElement('input');
+          layerName.placeholder = 'Mandatory';
+          layerName.id = 'layerName';
+          var labelName = document.createElement('label');
+          labelName.for = 'layerName';
+          labelName.innerHTML='Name';
+          var layerDescription = document.createElement('input');
+          layerDescription.id='layerDescription';
+          var labelDescription = document.createElement('label')
+          labelDescription.for = 'layerDescription';
+          labelDescription.innerHTML = 'Description';
+          var layerFragmentType = document.createElement('input');
+          layerFragmentType.id = 'labelFragmentType';
+          var labelFragmentType = document.createElement('label');
+          labelFragmentType.for = 'labelFragmentType';
+          labelFragmentType.innerHTML = 'Fragment type';
+          var layerDataType = document.createElement('input');
+          layerDataType.id = 'layerDataType';
+          var labelDataType = document.createElement('label');
+          labelDataType.for = 'layerDataType';
+          labelDataType.innerHTML = 'Data type';
+          this.$.formDiv.appendChild(form);
+          form.onsubmit = function(e){
+            e.preventDefault();
+            if (layerName.value != ''){
+            draw.client.createLayer(draw.corpus,layerName.value,layerDescription.value,layerFragmentType.value,layerDataType.value).then(result => {console.log(result);})
+            draw.$.formDiv.removeChild(this);
+          }
+        }
+          form.appendChild(labelName);form.appendChild(layerName);form.appendChild(labelDescription);form.appendChild(layerDescription);form.appendChild(labelFragmentType);form.appendChild(layerFragmentType);form.appendChild(labelDataType);form.appendChild(layerDataType);form.appendChild(submitButton);
+        })
+      }
+
+    }
+    customElements.define(CamomileAdministrationLayers.is, CamomileAdministrationLayers);
+  </script>
+
+</dom-module>

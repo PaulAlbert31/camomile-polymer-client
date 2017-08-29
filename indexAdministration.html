@@ -20,9 +20,12 @@
   <link rel="import" href="camomile-corpus-select.html">
   <link rel="import" href="camomile-medium-select.html">
   <link rel="import" href="camomile-layer-select.html">
-  <link rel="import" href="camomile-administration.html">
   <link rel="import" href="camomile-medium-view.html">
   <link rel='import' href='camomile-layer-state.html'>
+  <link rel="import" href="camomile-administration-corpus.html">
+  <link rel="import" href="camomile-administration-layers.html">
+  <link rel="import" href="camomile-administration-users.html">
+
 
 
   <style>
@@ -30,7 +33,7 @@
     background-color:#eee;
   }
   nav ul li a:hover {
-   background-color: #f5f5f5;
+   background-color: #9B9B9B;
 }
   </style>
 </head>
@@ -58,7 +61,7 @@
           <li><a href='indexUpload.html' class='red-text text-lighten-2'>Upload</a></li>
           <li><a href='indexDownload.html' class='red-text text-lighten-2'>Download</a></li>
           <li class="divider red lighten-2"></li>
-          <li><a href='indexAdministration.html' class='grey lighten-2 red-text text-lighten-2'>Administration</a></li>
+          <li><a href='indexAdministration.html' class='grey lighten-1 red-text text-lighten-2'>Administration</a></li>
           <li class="divider red lighten-2"></li>
         </ul>
       </div>
@@ -87,7 +90,9 @@
             <camomile-layer-select id="layer1" src-corpus="corpus1" style='position:relative;top:50px'></camomile-layer-select>
           </div>
           <div class="col s12">
-            <camomile-administration id='administration1' src-corpus ='corpus1' src-mediumview='mediumView1' src-layerstate='layerState1' style='position:relative;top:50px'></camomile-administration>
+            <camomile-administration-layers id='administration1' src-corpus ='corpus1' src-mediumview='mediumView1' src-layerstate='layerState1' style='position:relative;top:50px'></camomile-administration-layers>
+            <camomile-administration-corpus id='administration2' src-corpus ='corpus1' src-mediumview='mediumView1' src-layerstate='layerState1' style='position:relative;top:50px'></camomile-administration-corpus>
+            <camomile-administration-users id='administration3' src-corpus ='corpus1' src-mediumview='mediumView1' src-layerstate='layerState1' style='position:relative;top:50px'></camomile-administration-users>
           </div>
           <div class="col s12">
             <camomile-layer-state id="layerState1" src-layer="layer1" src-medium="medium1"></camomile-layer-state>
