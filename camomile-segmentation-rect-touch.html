@@ -31,6 +31,7 @@
         super.ready();
 
         const layerState = getElementAt(this.srcLayerstate);
+        this.colors=['#f06','#ff6600','#ff33cc','#9966ff','#0066ff','#00ccff','#00cc00','#996633','#ffff00','#ffffff'];
 
         var touchLayer = this.$.displayDiv;
         this.draw=SVG(touchLayer).size(window.innerWidth,window.innerHeight);
@@ -45,6 +46,7 @@
           var annotations=this.annotations;
           this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
           this.tabAnnim = [];
+          this.tabTemp =[];
           for (let i = 0;i<this.annotations.length;i++){
             displayAnnim(this);
           }
@@ -52,15 +54,20 @@
 
         function displayAnnim(sheet){
           var j = sheet.tabAnnim.length;
-          console.log(j,sheet.annotations.length);
             if(sheet.annotations[j].fragment=='tape simple'){
-              sheet.tabAnnim.push(sheet.draw.circle(window.innerWidth/30));
-              sheet.tabAnnim[j].center(JSON.parse(sheet.annotations[j].data.coord).x*window.innerWidth*0.95,JSON.parse(sheet.annotations[j].data.coord).y*window.innerWidth*9/16*0.95).fill('#f06');
+              sheet.tabAnnim.push(sheet.draw.circle(window.innerWidth/50));
+              sheet.tabAnnim[j].center(JSON.parse(sheet.annotations[j].data.coord).x*window.innerWidth*0.95,JSON.parse(sheet.annotations[j].data.coord).y*window.innerWidth*9/16*0.95).fill(sheet.colors[j%10]);
             }
             else if (sheet.annotations[j].fragment == 'pan') {
               sheet.tabAnnim.push(sheet.draw.line(JSON.parse(sheet.annotations[j].data.coord).start[0]*window.innerWidth*0.95,JSON.parse(sheet.annotations[j].data.coord).start[1]*window.innerWidth*9/16*0.95,JSON.parse(sheet.annotations[j].data.coord).end[0]*window.innerWidth,JSON.parse(sheet.annotations[j].data.coord).end[1]*window.innerWidth*9/16));
-              sheet.tabAnnim[j].stroke({color:'#f06',width:3})
+              sheet.tabAnnim[j].stroke({color:sheet.colors[j%10],width:3})
             }
+          sheet.tabTemp.push(sheet.draw.line(sheet.annotations[j].data.currentTime*window.innerWidth*0.95,window.innerWidth*9/16*0.95+5,sheet.annotations[j].data.currentTime*window.innerWidth*0.95,window.innerWidth*9/16*0.95+5+window.innerHeight/30))
+          sheet.tabTemp[j].stroke({color:sheet.colors[j%10],width:1})
+          if(sheet.tabAnnim.length>9){
+            sheet.tabAnnim[sheet.tabAnnim.length-j].hide();
+            sheet.tabTemp[sheet.tabAnnim.length-j].hide();
+          }
         }
 
         layerState.addEventListener("populate_annotations",({detail:{data}}) => {
@@ -73,6 +80,7 @@
             console.log(e);
           }
           this.tabAnnim = [];
+          this.tabTemp = [];
           console.log(this.annotations);
           for (let i = 0;i<this.annotations.length;i++){
             displayAnnim(i,this);
