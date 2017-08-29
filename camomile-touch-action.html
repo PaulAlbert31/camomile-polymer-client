@@ -29,6 +29,7 @@
         if(this.layerState.populated&&this.player.wrapped){
           this.setFunctions();
           this.player.wrapped=false;
+          this.player.$.videoControls.children[0].style.width='100%';
         }
       }
       }
@@ -68,6 +69,7 @@
         camomilePlayer.addEventListener('wrapped',()=> this._setupPlayer(camomilePlayer))
         camomileLogin.addEventListener('login',()=>this._setupLogin(camomileLogin))
         camomileLogin.addEventListener('logout',()=>this._resetLogin())
+        Materialize.toast('If the page is blank, reduce the size of the window/rotate your device to start !', 8000);
       }
 
       addAnnotation(fragment,data){
@@ -161,6 +163,7 @@
             'x': (event.center.x),
             'y': (event.center.y),
             'currentTime': videoElement.currentTime});
+            touch.layerState.dispatchEvent(new CustomEvent("update",{}));
             if (videoElement.currentTime-start[2]<2) {
               arrow.stroke({opacity:0.8}).plot(start[0]*width,start[1]*height,(event.center.x*width),event.center.y*height).animate(300).stroke({opacity:0});
             }

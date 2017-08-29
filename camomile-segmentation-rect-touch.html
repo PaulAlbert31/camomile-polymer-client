@@ -1,0 +1,116 @@
+<link rel="import" href="bower_components/polymer/polymer-element.html">
+<link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+<link rel="import" href="materialize.html">
+<link rel="import" href="camomile-segmentation-table-touch.html">
+<script src="node_modules/svgjs/dist/svg.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script type="text/javascript" src="./node_modules/materialize-css/dist/js/materialize.min.js"></script>
+<script type="text/javascript" src="./node_modules/lz-string/libs/lz-string.js"></script>
+
+
+<script src="getElementAt.js"></script>
+
+<dom-module id="camomile-segmentation-rect-touch">
+
+  <template>
+  <style include='materialize'></style>
+    <div id="displayDiv"></div>
+  </template>
+
+  <script>
+    class CamomileSegmentationRectTouch extends Polymer.Element {
+      static get is() {
+        return "camomile-segmentation-rect-touch";
+      }
+
+      constructor() {
+        super();
+      }
+
+      ready() {
+        super.ready();
+
+        const layerState = getElementAt(this.srcLayerstate);
+
+        var touchLayer = this.$.displayDiv;
+        this.draw=SVG(touchLayer).size(window.innerWidth,window.innerHeight);
+        var mainRect = this.draw.rect(window.innerWidth*0.95,window.innerWidth*9/16*0.95)
+        mainRect.move(0,0).fill('#E5E5E5');
+        var timeRect = this.draw.rect(window.innerWidth*0.95,window.innerHeight/30)
+        timeRect.move(0,window.innerWidth*9/16*0.95+5).fill('#E5E5E5');
+
+        if (layerState.populated&&layerState.annotations){
+          const data = layerState.annotations;
+          this.annotations=JSON.parse(JSON.stringify(data));
+          var annotations=this.annotations;
+          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+          this.tabAnnim = [];
+          for (let i = 0;i<this.annotations.length;i++){
+            displayAnnim(this);
+          }
+        }
+
+        function displayAnnim(sheet){
+          var j = sheet.tabAnnim.length;
+          console.log(j,sheet.annotations.length);
+            if(sheet.annotations[j].fragment=='tape simple'){
+              sheet.tabAnnim.push(sheet.draw.circle(window.innerWidth/30));
+              sheet.tabAnnim[j].center(JSON.parse(sheet.annotations[j].data.coord).x*window.innerWidth*0.95,JSON.parse(sheet.annotations[j].data.coord).y*window.innerWidth*9/16*0.95).fill('#f06');
+            }
+            else if (sheet.annotations[j].fragment == 'pan') {
+              sheet.tabAnnim.push(sheet.draw.line(JSON.parse(sheet.annotations[j].data.coord).start[0]*window.innerWidth*0.95,JSON.parse(sheet.annotations[j].data.coord).start[1]*window.innerWidth*9/16*0.95,JSON.parse(sheet.annotations[j].data.coord).end[0]*window.innerWidth,JSON.parse(sheet.annotations[j].data.coord).end[1]*window.innerWidth*9/16));
+              sheet.tabAnnim[j].stroke({color:'#f06',width:3})
+            }
+        }
+
+        layerState.addEventListener("populate_annotations",({detail:{data}}) => {
+          this.annotations=JSON.parse(JSON.stringify(data));
+          var annotations=this.annotations;
+          this.annotations.sort((a,b)=>a.data.currentTime-b.data.currentTime);
+          try{for(let i=0;i<this.tabAnnim.length;i++){
+              this.tabAnnim[i].hide();
+          }}catch(e){
+            console.log(e);
+          }
+          this.tabAnnim = [];
+          console.log(this.annotations);
+          for (let i = 0;i<this.annotations.length;i++){
+            displayAnnim(i,this);
+          }
+        });
+
+        layerState.addEventListener("reset_annotations",() => {
+          this.annotations=null;
+        });
+
+        layerState.addEventListener("add_annotation",({detail:{data}}) => {
+          this.push("annotations",data);
+          // this.annotations.sort((a,b)=>a.fragment.currentTime-b.fragment.currentTime);
+          displayAnnim(this);
+        });
+
+        layerState.addEventListener("update_annotation",({detail:{data}}) => {
+          const annotationIndex=this.annotations.findIndex(annotation => annotation._id===data._id);
+          this.splice("annotations", annotationIndex, 1,data);
+          this.annotations.sort((a,b)=>a.fragment.currentTime-b.fragment.currentTime);
+        });
+
+        layerState.addEventListener("delete_annotation",({detail:{id}}) => {
+          const annotationIndex=this.annotations.findIndex(annotation => annotation._id===id);
+          this.splice("annotations", annotationIndex, 1);
+        });
+
+
+      }
+      static get properties() {
+        return {
+          srcLayerstate: String,
+          id: String
+        };
+      }
+
+    }
+    customElements.define(CamomileSegmentationRectTouch.is, CamomileSegmentationRectTouch);
+  </script>
+
+</dom-module>
