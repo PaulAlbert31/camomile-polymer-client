@@ -65,8 +65,8 @@
           sheet.tabTemp.push(sheet.draw.line(sheet.annotations[j].data.currentTime*window.innerWidth*0.95,window.innerWidth*9/16*0.95+5,sheet.annotations[j].data.currentTime*window.innerWidth*0.95,window.innerWidth*9/16*0.95+5+window.innerHeight/30))
           sheet.tabTemp[j].stroke({color:sheet.colors[j%10],width:1})
           if(sheet.tabAnnim.length>9){
-            sheet.tabAnnim[sheet.tabAnnim.length-j].hide();
-            sheet.tabTemp[sheet.tabAnnim.length-j].hide();
+            sheet.tabAnnim[sheet.tabAnnim.length-10].hide();
+            sheet.tabTemp[sheet.tabAnnim.length-10].hide();
           }
         }
 
@@ -81,9 +81,8 @@
           }
           this.tabAnnim = [];
           this.tabTemp = [];
-          console.log(this.annotations);
           for (let i = 0;i<this.annotations.length;i++){
-            displayAnnim(i,this);
+            displayAnnim(this);
           }
         });
 

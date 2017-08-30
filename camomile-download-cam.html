@@ -20,6 +20,7 @@ class CamomileDownloadCam extends CamomileDownload {
   _extention(){
     return '.cam'
   }
+  
   _format(annotations){
     for (let i=0;i<annotations.length;i++){
     annotations[i].data=LZString.decompressFromEncodedURIComponent(annotations[i].data)
