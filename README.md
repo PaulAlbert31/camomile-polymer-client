@@ -2,7 +2,7 @@
 
 ## Demo
 
-You will be able to try it on the github pages demo at [https://paulalbert31.io/camomile-polymer-client/indexDemo.html]
+You will be able to try it on the github pages demo at [https://paulalbert31.github.io/camomile-polymer-client/indexDemo.html]
 (using `https://flower.limsi.fr` as the endpoint, `test` as user and `test5325` as password)
 
 To use it, select the layer 'layer23' in the side panel with REPERE as Corpus. You can visualise the last 10 annotations you did in the visualisation page (top right corner).
