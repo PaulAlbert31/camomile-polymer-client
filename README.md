@@ -1,12 +1,12 @@
-# camomile-polymer-client
+visualization# camomile-polymer-client
 
 ## Demo
 
 You will be able to try it on the github pages demo at [https://paulalbert31.github.io/camomile-polymer-client/indexDemo.html]
 (using `https://flower.limsi.fr` as the endpoint, `test` as user and `test5325` as password)
 
-To use it, select the layer 'layer23' in the side panel with REPERE as Corpus. You can visualise the last 10 annotations you did in the visualisation page (top right corner).
-To see more of the project, go back to the annotations (top right corner). You will have acces to the rest of the project.
+To use it, select the layer 'layer23' in the side panel with REPERE as Corpus. You can visualize the last ten annotations that occurred. To do that, go on the top right corner and choose "Demo". You will arrive to the same page but for demo purposes. You can navigate (through the top right corner menu again) between the annotation (on the video) and the visualization.
+To see more of the project, go back to the annotations (top right corner). You will have access to the rest of the project.
 
 ## Specifications
 
